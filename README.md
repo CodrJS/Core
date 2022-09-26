@@ -1,4 +1,4 @@
-# @dylanbulmer/codr
+# @codrjs/core
 
 This is an open-sourced customizable annotation tool for researchers and industry.
 
