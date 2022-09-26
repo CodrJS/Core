@@ -1,5 +1,7 @@
 # @codrjs/core
 
+[![CodeQL](https://github.com/CodrJS/Core/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/CodrJS/Core/actions/workflows/codeql.yml)
+
 This is an open-sourced customizable annotation tool for researchers and industry.
 
 ## TODO:
