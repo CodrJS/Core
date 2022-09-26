@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc.json",
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "dynamicImport": true
+    },
+    "baseUrl": "./src",
+    "paths": {
+      "classes/*": ["classes/*"],
+      "types/*": ["types/*"],
+      "utils/*": ["utils/*"]
+    }
+  },
+  "env": {
+    "targets": {
+      "node": 16
+    }
+  },
+  "module": {
+    "type": "commonjs"
+  },
+  "minify": true
+}
