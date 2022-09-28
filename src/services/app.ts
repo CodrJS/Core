@@ -7,6 +7,14 @@
 interface AppOptions {
   /** database url to mongodb instance */
   database: string;
+  /** codr instance information */
+  instance: {
+    name: string;
+    contact: {
+      name: string;
+      email: string;
+    };
+  };
 }
 
 /**
@@ -14,6 +22,7 @@ interface AppOptions {
  */
 class App implements AppOptions {
   database: AppOptions["database"];
+  instance: AppOptions["instance"];
 
   constructor(options: AppOptions) {
     if (options?.database) {
@@ -21,6 +30,12 @@ class App implements AppOptions {
       else throw new Error("Malformatted Mongodb url.");
     } else {
       throw new Error("No Mongodb url was given.");
+    }
+
+    if (options?.instance) {
+      this.instance = options.instance;
+    } else {
+      throw new Error("No instance data was given.");
     }
   }
 }
