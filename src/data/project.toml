@@ -1,0 +1,29 @@
+[general]
+title = "My Project"
+slug = "my-project"
+bgColorClass = "bg-pink-600"
+guidelines = """
+My guidelines go here."""
+
+[display]
+
+[[display.inputs]]
+type = "text"
+language = "Java"
+value = "class MyClass {}"
+
+[[display.inputs]]
+type = "text"
+language = "Java"
+value = "class MyClass2 {}"
+
+[[display.outputs]]
+type = "range"
+range = [1, 10]
+
+[[display.outputs]]
+type = "short-text"
+
+[model]
+type = "string"
+id = "string"

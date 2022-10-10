@@ -10,7 +10,7 @@ interface AppOptions {
   /** codr instance information */
   instance: {
     name: string;
-    contact: {
+    contact?: {
       name: string;
       email: string;
     };

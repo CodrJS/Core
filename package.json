@@ -15,12 +15,14 @@
     "lint": "eslint -c .eslintrc.json --ignore-path .eslintignore --ext .ts src",
     "preversion": "yarn lint",
     "version": "yarn format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "convert": "taplo get -f src/data/project.toml -o json > src/data/project.json"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.3.3",
     "@swc/jest": "^0.2.22",
+    "@taplo/cli": "^0.5.2",
     "@types/jest": "^29.0.3",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^18.7.21",
