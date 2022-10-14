@@ -1,0 +1,76 @@
+[general]
+title = "My Project"
+slug = "my-project"
+bgColorClass = "bg-pink-600"
+guidelines = """
+My guidelines go here."""
+
+[display]
+
+[[display.inputs]]
+type = "text"
+language = "Java"
+value = "class MyClass {}"
+
+[[display.inputs]]
+type = "text"
+language = "Java"
+value = "model.data.methods.*.src_code"
+
+[[display.outputs]]
+type = "range"
+range = [ 1, 10 ]
+
+[[display.outputs]]
+type = "short-text"
+
+[model]
+type = "object"
+required = true
+
+[model.of.type]
+type = "string"
+required = true
+
+[model.of._id]
+type = "string"
+required = true
+
+[model.of.dataId]
+type = "string"
+required = true
+
+[model.of.data]
+type = "object"
+required = true
+
+[model.of.data.of.methods]
+type = "array"
+required = true
+
+  [model.of.data.of.methods.of]
+  type = "object"
+
+[model.of.data.of.methods.of.of.method_id]
+type = "string"
+required = true
+
+[model.of.data.of.methods.of.of.src_code]
+type = "string"
+required = true
+
+[model.of.data.of.methods.of.of.highlight]
+type = "array"
+required = false
+
+[model.of.data.of.methods.of.of.highlight.of.start]
+type = "number"
+required = true
+
+[model.of.data.of.methods.of.of.highlight.of.end]
+type = "number"
+required = true
+
+[model.of.data.of.methods.of.of.highlight.of.color]
+type = "string"
+required = true

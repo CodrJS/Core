@@ -1,0 +1,93 @@
+{
+  "general": {
+    "title": "My Project",
+    "slug": "my-project",
+    "bgColorClass": "bg-pink-600",
+    "guidelines": "My guidelines go here."
+  },
+  "display": {
+    "inputs": [
+      {
+        "type": "text",
+        "language": "Java",
+        "value": "class MyClass {}"
+      },
+      {
+        "type": "text",
+        "language": "Java",
+        "value": "model.data.methods.*.src_code"
+      }
+    ],
+    "outputs": [
+      {
+        "type": "range",
+        "range": [
+          1,
+          10
+        ]
+      },
+      {
+        "type": "short-text"
+      }
+    ]
+  },
+  "model": {
+    "type": "object",
+    "required": true,
+    "of": {
+      "type": {
+        "type": "string",
+        "required": true
+      },
+      "_id": {
+        "type": "string",
+        "required": true
+      },
+      "dataId": {
+        "type": "string",
+        "required": true
+      },
+      "data": {
+        "type": "object",
+        "required": true,
+        "of": {
+          "methods": {
+            "type": "array",
+            "required": true,
+            "of": {
+              "type": "object",
+              "of": {
+                "method_id": {
+                  "type": "string",
+                  "required": true
+                },
+                "src_code": {
+                  "type": "string",
+                  "required": true
+                },
+                "highlight": {
+                  "type": "array",
+                  "required": false,
+                  "of": {
+                    "start": {
+                      "type": "number",
+                      "required": true
+                    },
+                    "end": {
+                      "type": "number",
+                      "required": true
+                    },
+                    "color": {
+                      "type": "string",
+                      "required": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

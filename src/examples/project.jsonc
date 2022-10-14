@@ -1,0 +1,69 @@
+{
+  "general": {
+    "title": "My Project",
+    "slug": "my-project",
+    "bgColorClass": "bg-pink-600",
+    "guidelines": "My guidelines go here."
+  },
+  "display": {
+    "inputs": [
+      {
+        "type": "text",
+        "language": "Java",
+        "title": "Method 1",
+        "value": "class MyClass {}" // should this point to a location in the sample model?
+        // if so, should we define a way to "grab all" values.
+        // such as `model.data.methods.*.src_code` which grabs all values within an array from the model?
+      },
+      {
+        "type": "text",
+        "language": "Java",
+        "title": "Method {{ i }}",
+        "value": "model.data.methods.*.src_code"
+        // furthermore, if the value string here matches a path regex (e.g. /model\.([\w*]\.?)+/g),
+        // then grab the values from the dataset sample, otherwise, display the predefined value given?
+      }
+    ],
+    "outputs": [
+      {
+        "type": "range",
+        "range": [1, 10]
+      },
+      {
+        "type": "short-text"
+      }
+    ]
+  },
+  "model": {
+    "type": "object",
+    "required": true,
+    "of": {
+      "type": { "type": "string", "required": true },
+      "_id": { "type": "string", "required": true },
+      "dataId": { "type": "string", "required": true },
+      "data": {
+        "type": "object",
+        "required": true,
+        "of": {
+          "methods": {
+            "type": "array",
+            "required": true,
+            "of": {
+              "method_id": { "type": "string", "required": true },
+              "src_code": { "type": "string", "required": true },
+              "highlight": {
+                "type": "array",
+                "required": false,
+                "of": {
+                  "start": { "type": "number", "required": true },
+                  "end": { "type": "number", "required": true },
+                  "color": { "type": "string", "required": true }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
