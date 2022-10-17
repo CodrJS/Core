@@ -14,10 +14,10 @@ describe("Project Configuration", () => {
 
     expect(config.bgColorClass).toBe("bg-pink-600");
     expect(config.title).toBe("My Project");
-    expect(config.display.inputs[0]).toEqual({
+    expect(config.display.inputs[1]).toEqual({
       type: "text",
       language: "Java",
-      value: "class MyClass {}",
+      value: "model.data.methods.*.src_code",
     });
   });
 
@@ -27,10 +27,10 @@ describe("Project Configuration", () => {
     expect(config.slug).toBe(
       `my-project-${new Date().toISOString().split("T")[0]}`,
     );
-    expect(config.display.inputs[0]).toEqual({
+    expect(config.display.inputs[1]).toEqual({
       type: "text",
       language: "Java",
-      value: "class MyClass {}",
+      value: "model.data.methods.*.src_code",
     });
   });
 });

@@ -1,0 +1,100 @@
+{
+  "$id": "https://codrjs.com/schema/project.schema.json",
+  "title": "Project",
+  "description": "A Codr annotation project configuration.",
+  "type": "object",
+  "properties": {
+    "general": {
+      "description": "General configuration for the project.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the project"
+        },
+        "type": {
+          "enum": ["classification", "labeling", "translation"],
+          "description": "Type of annotation task the project is to perform"
+        },
+        "slug": {
+          "type": "string",
+          "description": "The URL slug for the project"
+        },
+        "bgColorClass": {
+          "type": "string",
+          "description": "The color for the project"
+        },
+        "guidelines": {
+          "type": "string",
+          "description": "The guidelines for the project"
+        }
+      },
+      "required": ["title", "type", "guidelines"]
+    },
+    "display": {
+      "description": "User interface configuration for the project.",
+      "type": "object",
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "description": "The data from your samples to display to the annotators",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": ["text", "code"],
+                "description": "Type of data to be displayed. Use `code` to enable highlighting."
+              },
+              "language": {
+                "type": "string",
+                "description": "Language is used to provide code highlighting."
+              },
+              "value": {
+                "type": "string",
+                "description": "Location of the data or a hard-typed value to display."
+              }
+            },
+            "required": ["type", "value"],
+            "minItems": 1,
+            "exclusiveMinimum": 1
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "description": "The types of inputs to show the user to collect annotations.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "enum": [
+                  "short-text",
+                  "long-text",
+                  "range",
+                  "radio",
+                  "multiple-choice"
+                ],
+                "description": "The type of output to display to the user."
+              },
+              "range": {
+                "type": "array",
+                "items": { "type": "integer" },
+                "minItems": 2,
+                "maxItems": 2,
+                "description": "If type is range, then a 2-tuple is expected; [min, max]",
+                "default": []
+              }
+            },
+            "required": ["type"],
+            "minItems": 1
+          }
+        }
+      },
+      "required": ["inputs", "outputs"]
+    },
+    "model": {
+      "$ref": "https://json-schema.org/draft/2020-12/schema",
+      "description": "Project dataset sample format, used for data validation and referencing."
+    }
+  },
+  "required": ["general", "display", "model"]
+}

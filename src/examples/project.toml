@@ -1,5 +1,8 @@
+$schema = "https://raw.githubusercontent.com/CodrJS/WebUI/main/public/schema/project.schema.json"
+
 [general]
 title = "My Project"
+type = "labeling"
 slug = "my-project"
 bgColorClass = "bg-pink-600"
 guidelines = """
@@ -9,8 +12,7 @@ My guidelines go here."""
 
 [[display.inputs]]
 type = "text"
-language = "Java"
-value = "class MyClass {}"
+value = "Some text here"
 
 [[display.inputs]]
 type = "text"
@@ -22,55 +24,52 @@ type = "range"
 range = [ 1, 10 ]
 
 [[display.outputs]]
-type = "short-text"
+type = "radio"
+prompt = "![alt text](url)"
+values = [ "option 1", "option 2", "option 3", "option 4" ]
 
 [model]
 type = "object"
-required = true
+required = [ "type", "_id", "dataId", "data" ]
 
-[model.of.type]
+[model.properties.type]
 type = "string"
-required = true
 
-[model.of._id]
+[model.properties._id]
 type = "string"
-required = true
 
-[model.of.dataId]
+[model.properties.dataId]
 type = "string"
-required = true
 
-[model.of.data]
+[model.properties.data]
 type = "object"
-required = true
+required = [ "methods" ]
 
-[model.of.data.of.methods]
+[model.properties.data.properties.methods]
 type = "array"
-required = true
 
-  [model.of.data.of.methods.of]
+  [model.properties.data.properties.methods.items]
   type = "object"
+  required = [ "src_code", "method_id" ]
 
-[model.of.data.of.methods.of.of.method_id]
+[model.properties.data.properties.methods.items.properties.method_id]
 type = "string"
-required = true
 
-[model.of.data.of.methods.of.of.src_code]
+[model.properties.data.properties.methods.items.properties.src_code]
 type = "string"
-required = true
 
-[model.of.data.of.methods.of.of.highlight]
+[model.properties.data.properties.methods.items.properties.highlight]
 type = "array"
-required = false
 
-[model.of.data.of.methods.of.of.highlight.of.start]
-type = "number"
-required = true
+  [model.properties.data.properties.methods.items.properties.highlight.items]
+  type = "object"
+  required = [ "start", "end", "color" ]
 
-[model.of.data.of.methods.of.of.highlight.of.end]
-type = "number"
-required = true
+[model.properties.data.properties.methods.items.properties.highlight.items.properties.start]
+type = "integer"
 
-[model.of.data.of.methods.of.of.highlight.of.color]
+[model.properties.data.properties.methods.items.properties.highlight.items.properties.end]
+type = "integer"
+
+[model.properties.data.properties.methods.items.properties.highlight.items.properties.color]
 type = "string"
-required = true

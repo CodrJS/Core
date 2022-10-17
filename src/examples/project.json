@@ -1,17 +1,15 @@
 {
+  "$schema": "https://raw.githubusercontent.com/CodrJS/WebUI/main/public/schema/project.schema.json",
   "general": {
     "title": "My Project",
+    "type": "labeling",
     "slug": "my-project",
     "bgColorClass": "bg-pink-600",
     "guidelines": "My guidelines go here."
   },
   "display": {
     "inputs": [
-      {
-        "type": "text",
-        "language": "Java",
-        "value": "class MyClass {}"
-      },
+      { "type": "text", "value": "Some text here" },
       {
         "type": "text",
         "language": "Java",
@@ -19,74 +17,49 @@
       }
     ],
     "outputs": [
+      { "type": "range", "range": [1, 10] },
       {
-        "type": "range",
-        "range": [
-          1,
-          10
-        ]
-      },
-      {
-        "type": "short-text"
+        "type": "radio",
+        "prompt": "![alt text](url)",
+        "values": ["option 1", "option 2", "option 3", "option 4"]
       }
     ]
   },
   "model": {
     "type": "object",
-    "required": true,
-    "of": {
-      "type": {
-        "type": "string",
-        "required": true
-      },
-      "_id": {
-        "type": "string",
-        "required": true
-      },
-      "dataId": {
-        "type": "string",
-        "required": true
-      },
+    "required": ["type", "_id", "dataId", "data"],
+    "properties": {
+      "type": { "type": "string" },
+      "_id": { "type": "string" },
+      "dataId": { "type": "string" },
       "data": {
         "type": "object",
-        "required": true,
-        "of": {
+        "properties": {
           "methods": {
             "type": "array",
-            "required": true,
-            "of": {
+            "items": {
               "type": "object",
-              "of": {
-                "method_id": {
-                  "type": "string",
-                  "required": true
-                },
-                "src_code": {
-                  "type": "string",
-                  "required": true
-                },
+              "properties": {
+                "method_id": { "type": "string" },
+                "src_code": { "type": "string" },
                 "highlight": {
                   "type": "array",
-                  "required": false,
-                  "of": {
-                    "start": {
-                      "type": "number",
-                      "required": true
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start": { "type": "integer" },
+                      "end": { "type": "integer" },
+                      "color": { "type": "string" }
                     },
-                    "end": {
-                      "type": "number",
-                      "required": true
-                    },
-                    "color": {
-                      "type": "string",
-                      "required": true
-                    }
+                    "required": ["start", "end", "color"]
                   }
                 }
-              }
+              },
+              "required": ["src_code", "method_id"]
             }
           }
-        }
+        },
+        "required": ["methods"]
       }
     }
   }
