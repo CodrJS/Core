@@ -33,7 +33,7 @@ export interface ConfigOptions {
     guidelines?: string;
   };
   display: { inputs: Input<unknown>[]; outputs: Output[] };
-  model?: Record<string, unknown>;
+  model?: Schema;
 }
 
 class ProjectConfiguration {
@@ -42,8 +42,8 @@ class ProjectConfiguration {
   slug: string;
   bgColorClass: BgColorType;
   guidelines: string;
-  display: { inputs: Input<unknown>[]; outputs: Output[] };
-  model?: Schema;
+  display: ConfigOptions['display'];
+  model: ConfigOptions['model'];
   static from: (options: ConfigOptions) => ProjectConfiguration;
 
   constructor(options: ConfigOptions) {

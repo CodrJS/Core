@@ -93,7 +93,8 @@
     },
     "model": {
       "$ref": "https://json-schema.org/draft/2020-12/schema",
-      "description": "Project dataset sample format, used for data validation and referencing."
+      "description": "Project dataset sample format, used for data validation and referencing.",
+      "required": ["type"]
     }
   },
   "required": ["general", "display", "model"]
