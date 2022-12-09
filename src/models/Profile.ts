@@ -1,7 +1,7 @@
 import { Schema, models, model } from "mongoose";
 // import { sign } from "jsonwebtoken";
 
-const UserProvider = new Schema({
+const UserProfileProvider = new Schema({
   photo: { type: String },
   phone: { type: String },
   email: { type: String },
@@ -9,7 +9,7 @@ const UserProvider = new Schema({
 });
 
 /* UserSchema will correspond to a collection in your MongoDB database. */
-const UserSchema = new Schema(
+const UserProfileSchema = new Schema(
   {
     name: {
       type: String,
@@ -27,7 +27,7 @@ const UserSchema = new Schema(
       index: true,
     },
     providers: {
-      type: [UserProvider],
+      type: [UserProfileProvider],
     },
   },
   {
@@ -107,4 +107,4 @@ const UserSchema = new Schema(
 );
 
 // exports User model.
-export default models.User || model("User", UserSchema);
+export default models.User || model("User", UserProfileSchema);

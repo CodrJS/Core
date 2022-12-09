@@ -13,21 +13,21 @@ describe("App configuration", () => {
   };
   const instance2 = JSON.parse(JSON.stringify(instance1));
   delete instance2.contact;
-  const database = process.env.MONGODB_URL as string;
+  const databaseUri = process.env.MONGODB_URL as string;
 
   // create app from Codr singleton
-  const app1 = new Codr.App({ database, instance: instance1 });
+  const app1 = new Codr.App({ databaseUri: databaseUri, instance: instance1 });
   // create app from cherry picked import
-  const app2 = new App({ database, instance: instance2 });
+  const app2 = new App({ databaseUri: databaseUri, instance: instance2 });
 
   it("does not throw an error", () => {
-    expect(app1.database).toBe(
-      "mongodb://someUser:abc123@server-a9.host.com:41653,server-a2.host.com/testdb-2?replicaSet=rs-some2&replicaSet2=rs-some.2&replicaSet2=rs-some.2",
+    expect(app1.databaseUri).toBe(
+      "mongodb://someUser:abc123@server-a9.host.com:41653,server-a2.host.com/testdb-2?replicaSet=rs-some2&replicaSet2=rs-some.2",
     );
     expect(app1.instance?.contact?.name).toEqual("Dylan");
 
-    expect(app2.database).toBe(
-      "mongodb://someUser:abc123@server-a9.host.com:41653,server-a2.host.com/testdb-2?replicaSet=rs-some2&replicaSet2=rs-some.2&replicaSet2=rs-some.2",
+    expect(app2.databaseUri).toBe(
+      "mongodb://someUser:abc123@server-a9.host.com:41653,server-a2.host.com/testdb-2?replicaSet=rs-some2&replicaSet2=rs-some.2",
     );
     expect(app2.instance?.name).toEqual("My App Instance");
   });
@@ -45,7 +45,7 @@ describe("App configuration", () => {
   it("throws mongodb url invalid", () => {
     const t = () => {
       return new App({
-        database: "mongodb:/123.abc.com:27017/test",
+        databaseUri: "mongodb:/123.abc.com:27017/test",
         instance: instance1,
       });
     };
@@ -57,7 +57,7 @@ describe("App configuration", () => {
     const t2 = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      return new App({ database });
+      return new App({ databaseUri: databaseUri });
     };
 
     expect(t2).toThrow(Error);

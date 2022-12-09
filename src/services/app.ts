@@ -4,9 +4,12 @@
  * with the server, and other uses.
  */
 
+import { accessibleRecordsPlugin } from "@casl/mongoose";
+import mongoose, { Mongoose } from "mongoose";
+
 interface AppOptions {
   /** database url to mongodb instance */
-  database: string;
+  databaseUri: string;
   /** codr instance information */
   instance: {
     name: string;
@@ -21,12 +24,14 @@ interface AppOptions {
  * Codr App Instance
  */
 class App implements AppOptions {
-  database: AppOptions["database"];
+  databaseUri: AppOptions["databaseUri"];
+  database?: Mongoose;
   instance: AppOptions["instance"];
 
   constructor(options: AppOptions) {
-    if (options?.database) {
-      if (testMongoUrl(options.database)) this.database = options.database;
+    if (options?.databaseUri) {
+      if (testMongoUrl(options.databaseUri))
+        this.databaseUri = options.databaseUri;
       else throw new Error("Malformatted Mongodb url.");
     } else {
       throw new Error("No Mongodb url was given.");
@@ -36,6 +41,17 @@ class App implements AppOptions {
       this.instance = options.instance;
     } else {
       throw new Error("No instance data was given.");
+    }
+
+    this.connect();
+  }
+
+  private async connect() {
+    try {
+      this.database = await mongoose.connect(this.databaseUri);
+      this.database.plugin(accessibleRecordsPlugin);
+    } catch (e) {
+      //
     }
   }
 }
