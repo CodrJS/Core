@@ -4,6 +4,9 @@
 
 This is an open-sourced customizable annotation tool for researchers and industry.
 
+We are designing and developing Codr is a way that is exapandable and requires
+very little overhaul when an existing feature changes or a new feature is added.
+
 ## TODO:
 
 - [ ] Build the framework

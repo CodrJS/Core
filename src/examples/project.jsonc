@@ -1,0 +1,68 @@
+{
+  "$schema": "https://raw.githubusercontent.com/CodrJS/WebUI/main/public/schema/project.schema.json",
+  "general": {
+    "title": "My Project",
+    "type": "labeling",
+    "slug": "my-project",
+    "bgColorClass": "bg-pink-600",
+    "guidelines": "My guidelines go here."
+  },
+  "display": {
+    "inputs": [
+      { "type": "text", "value": "Some text here" },
+      {
+        "type": "text",
+        "language": "Java",
+        "value": "model.data.methods.*.src_code"
+        // If the value string here matches a path regex (e.g. /model\.([\w*]\.?)+/g),
+        // then grab the values from the dataset sample, otherwise, display the text provided
+      }
+    ],
+    "outputs": [
+      { "type": "range", "range": [1, 10] },
+      {
+        "type": "radio",
+        "prompt": "![alt text](url)",
+        "values": ["option 1", "option 2", "option 3", "option 4"]
+      }
+    ]
+  },
+  "model": {
+    "type": "object",
+    "required": ["type", "_id", "dataId", "data"],
+    "properties": {
+      "type": { "type": "string" },
+      "_id": { "type": "string" },
+      "dataId": { "type": "string" },
+      "data": {
+        "type": "object",
+        "properties": {
+          "methods": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "method_id": { "type": "string" },
+                "src_code": { "type": "string" },
+                "highlight": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start": { "type": "integer" },
+                      "end": { "type": "integer" },
+                      "color": { "type": "string" }
+                    },
+                    "required": ["start", "end", "color"]
+                  }
+                }
+              },
+              "required": ["src_code", "method_id"]
+            }
+          }
+        },
+        "required": ["methods"]
+      }
+    }
+  }
+}

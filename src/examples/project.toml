@@ -1,0 +1,75 @@
+$schema = "https://raw.githubusercontent.com/CodrJS/WebUI/main/public/schema/project.schema.json"
+
+[general]
+title = "My Project"
+type = "labeling"
+slug = "my-project"
+bgColorClass = "bg-pink-600"
+guidelines = """
+My guidelines go here."""
+
+[display]
+
+[[display.inputs]]
+type = "text"
+value = "Some text here"
+
+[[display.inputs]]
+type = "text"
+language = "Java"
+value = "model.data.methods.*.src_code"
+
+[[display.outputs]]
+type = "range"
+range = [ 1, 10 ]
+
+[[display.outputs]]
+type = "radio"
+prompt = "![alt text](url)"
+values = [ "option 1", "option 2", "option 3", "option 4" ]
+
+[model]
+type = "object"
+required = [ "type", "_id", "dataId", "data" ]
+
+[model.properties.type]
+type = "string"
+
+[model.properties._id]
+type = "string"
+
+[model.properties.dataId]
+type = "string"
+
+[model.properties.data]
+type = "object"
+required = [ "methods" ]
+
+[model.properties.data.properties.methods]
+type = "array"
+
+  [model.properties.data.properties.methods.items]
+  type = "object"
+  required = [ "src_code", "method_id" ]
+
+[model.properties.data.properties.methods.items.properties.method_id]
+type = "string"
+
+[model.properties.data.properties.methods.items.properties.src_code]
+type = "string"
+
+[model.properties.data.properties.methods.items.properties.highlight]
+type = "array"
+
+  [model.properties.data.properties.methods.items.properties.highlight.items]
+  type = "object"
+  required = [ "start", "end", "color" ]
+
+[model.properties.data.properties.methods.items.properties.highlight.items.properties.start]
+type = "integer"
+
+[model.properties.data.properties.methods.items.properties.highlight.items.properties.end]
+type = "integer"
+
+[model.properties.data.properties.methods.items.properties.highlight.items.properties.color]
+type = "string"
