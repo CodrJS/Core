@@ -66,7 +66,11 @@ class Authentication {
 
           // send email with magic link
           const link =
-            process.env["DOMAIN"] + "/auth/email/verify?token=" + accessToken;
+            process.env["DOMAIN"] +
+            "/auth/email/verify?email=" +
+            email.email +
+            "&token=" +
+            accessToken;
           const template = new SigninTemplate();
           await Mail.send(await template.html({ link }), {
             ...template.config,

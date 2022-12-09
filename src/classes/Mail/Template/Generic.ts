@@ -99,10 +99,10 @@ export default class GenericTemplate<T extends string>
       style="background: white; padding: 2em; border-radius: 0.5em; max-width: 500px; text-align: left; margin: auto;"
     >
       ${content}
-
-      Best,
-      Your Codr Team
-      support@codrjs.com
+      <br />
+      Best,<br />
+      Your Codr Team<br />
+      support@codrjs.com<br />
     </div>
   </div>
 </body>`.replace(/[\n]*/g, "");
