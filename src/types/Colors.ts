@@ -11,7 +11,7 @@ const ColorCodes = [
   "cyan",
   "sky",
   "blue",
-  "indego",
+  "indigo",
   "violet",
   "purple",
   "fuchsia",

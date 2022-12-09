@@ -2,13 +2,13 @@ import { Schema } from "jsonschema";
 import Colors, { BgColorType } from "types/Colors";
 
 // classification and translation to be implemented first
-type TaskType = "classification" | "labeling" | "code-labeling" | "translation";
+type TaskType = "classification" | "tagging" | "code-tagging" | "translation";
 type InputField = "text";
 type OutputField =
   | "short-text"
   | "long-text"
   | "radio"
-  | "multiple-choice"
+  | "checkboxes"
   | "range";
 
 // what the researchers provide to display to users
@@ -21,7 +21,9 @@ interface Input<V> {
 // where the user provides their annotation
 interface Output {
   type: OutputField;
+  prompt?: string;
   range?: [number, number]; // [min, max]
+  options?: { key: string; value: string }[];
 }
 
 export interface ConfigOptions {
@@ -42,8 +44,8 @@ class ProjectConfiguration {
   slug: string;
   bgColorClass: BgColorType;
   guidelines: string;
-  display: ConfigOptions['display'];
-  model: ConfigOptions['model'];
+  display: ConfigOptions["display"];
+  model: ConfigOptions["model"];
   static from: (options: ConfigOptions) => ProjectConfiguration;
 
   constructor(options: ConfigOptions) {
