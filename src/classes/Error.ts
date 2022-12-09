@@ -4,7 +4,7 @@ interface IError {
   status: number;
 }
 
-export default class Error<Details> extends Response<Details> {
+export default class Error<Details = undefined> extends Response<Details> {
   status: IError["status"];
 
   constructor({ status, message }: IError & IResponse<Details>) {
