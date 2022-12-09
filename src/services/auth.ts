@@ -41,7 +41,7 @@ class Authentication {
       });
 
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: email.email });
       if (!user) {
         // is user cannot be found, then they are not allowed in.
         throw new Error({
@@ -54,7 +54,7 @@ class Authentication {
           // init access token
           const accessToken = uuidv4();
           await User.findOneAndUpdate(
-            { email },
+            { email: email.email },
             {
               accessToken: {
                 value: accessToken,
@@ -87,7 +87,10 @@ class Authentication {
           new Date(user.accessToken?.createdAt).getTime() + 5 * 60 * 1000
       ) {
         const token = generateToken(user.toJSON());
-        await User.findOneAndUpdate({ email }, { "accessToken.used": true });
+        await User.findOneAndUpdate(
+          { email: email.email },
+          { "accessToken.used": true },
+        );
         return new Response<{ token: string }>({
           message: `Welcome, ${user.name}`,
           details: { token },

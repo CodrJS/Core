@@ -56,6 +56,10 @@ const UserSchema = new Schema(
     providers: {
       type: [UserProvider],
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
