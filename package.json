@@ -1,6 +1,7 @@
 {
   "name": "@codrjs/core",
-  "version": "1.0.23An open-sourced customizable annotation tool",
+  "version": "1.0.3",
+  "description": "An open-sourced customizable annotation tool",
   "main": "index.js",
   "repository": "git@github.com:CodrJS/Core.git",
   "author": "Dylan Bulmer <dylan@dylanbulmer.com>",
