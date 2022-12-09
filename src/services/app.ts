@@ -5,7 +5,7 @@
  */
 
 import { accessibleRecordsPlugin } from "@casl/mongoose";
-import User from "models/User";
+import User from "../models/User";
 import mongoose, { Mongoose } from "mongoose";
 
 interface AppOptions {
