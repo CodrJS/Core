@@ -1,4 +1,5 @@
-import { Schema, models, model } from "mongoose";
+import { Schema, model } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 // import { sign } from "jsonwebtoken";
 
 const UserProvider = new Schema({
@@ -8,12 +9,35 @@ const UserProvider = new Schema({
   uid: { type: String, required: [true, "Provider's user id is required"] },
 });
 
+const UserAccessToken = new Schema({
+  value: {
+    type: String,
+    required: false,
+    unique: false,
+    default: uuidv4,
+  },
+  createdAt: {
+    type: String,
+    required: false,
+    unique: false,
+    default: new Date().toISOString(),
+  },
+  used: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 /* UserSchema will correspond to a collection in your MongoDB database. */
 const UserSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required."],
+      match: [
+        // Must match: "lastName,firstName<preferredName>"
+        /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/g,
+        "is invalid.",
+      ],
     },
     email: {
       type: String,
@@ -24,8 +48,10 @@ const UserSchema = new Schema(
         /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/g,
         "is invalid.",
       ],
+      unique: true,
       index: true,
     },
+    accessToken: UserAccessToken,
     providers: {
       type: [UserProvider],
     },
@@ -107,4 +133,5 @@ const UserSchema = new Schema(
 );
 
 // exports User model.
-export default models.User || model("User", UserSchema);
+const User = model("User", UserSchema);
+export default User;

@@ -1,4 +1,4 @@
-import { Schema, models, model } from "mongoose";
+import { Schema, model } from "mongoose";
 // import { sign } from "jsonwebtoken";
 
 const UserProfileProvider = new Schema({
@@ -107,4 +107,5 @@ const UserProfileSchema = new Schema(
 );
 
 // exports User model.
-export default models.User || model("User", UserProfileSchema);
+const UserProfile = model("UserProfile", UserProfileSchema)
+export default UserProfile;
