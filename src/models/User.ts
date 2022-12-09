@@ -99,7 +99,7 @@ const UserSchema = new Schema(
           }
         },
       },
-      name: {
+      fullname: {
         get() {
           const displayNameRegex =
             /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;

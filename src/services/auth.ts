@@ -22,7 +22,13 @@ class Authentication {
 
   // }
 
-  async signinWithEmail({ email, accessToken }: { email: Email; accessToken?: string }) {
+  async signinWithEmail({
+    email,
+    accessToken,
+  }: {
+    email: Email;
+    accessToken?: string;
+  }): Promise<Response<undefined | { token: string }>> {
     if (!email)
       throw new Error({
         status: 400,
@@ -37,12 +43,7 @@ class Authentication {
     try {
       const user = await User.findOne({ email });
       if (!user) {
-        // let reg = await register(email);
-        // res.send({
-        //   ok: true,
-        //   message:
-        //     "Your account has been created, click the link in email to sign in 👻",
-        // });
+        // is user cannot be found, then they are not allowed in.
         throw new Error({
           status: 401,
           message:
