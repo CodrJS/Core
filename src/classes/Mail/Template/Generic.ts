@@ -92,14 +92,14 @@ export default class GenericTemplate<T extends string>
    */
   private wrapperHTML({ content }: { content: string }) {
     return `<body
-  style="background: #f3f4f6; padding: 2em; font-size:16px; font-family:source-sans-pro, Roboto, sans-serif;"
+  style="background: #f3f4f6; padding: 2em 1em; font-size:16px; font-family:source-sans-pro, Roboto, sans-serif;"
 >
   <div style=" text-align: center;">
     <div
-      style="background: white; padding: 2em; border-radius: 0.5em; max-width: 500px; text-align: left; margin: auto;"
+      style="background: white; padding: 2em; border-radius: 0.5em; max-width: 65ch; text-align: left; margin: auto;"
     >
       ${content}
-      <br />
+      <br /><br />
       Best,<br />
       Your Codr Team<br />
       support@codrjs.com<br />
@@ -114,7 +114,7 @@ export default class GenericTemplate<T extends string>
  *
  * <img
  *   src="cid:logo"
- *   alt="TrustedRentr Logo"
+ *   alt="Codr Logo"
  *   style="display: block; width: 100%; height: 48px; margin-bottom: 2em; object-fit: contain;"
  * />
  */

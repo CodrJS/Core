@@ -1,32 +1,11 @@
 import { EmailRegex } from "../classes/Email";
 import { Schema, model } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
-// import { sign } from "jsonwebtoken";
 
 const UserProvider = new Schema({
   photo: { type: String },
   phone: { type: String },
-  email: { type: String },
+  email: { type: String, required: true },
   uid: { type: String, required: [true, "Provider's user id is required"] },
-});
-
-const UserAccessToken = new Schema({
-  value: {
-    type: String,
-    required: false,
-    unique: false,
-    default: uuidv4,
-  },
-  createdAt: {
-    type: String,
-    required: false,
-    unique: false,
-    default: new Date().toISOString(),
-  },
-  used: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 /* UserSchema will correspond to a collection in your MongoDB database. */
@@ -52,7 +31,8 @@ const UserSchema = new Schema(
       unique: true,
       index: true,
     },
-    accessToken: UserAccessToken,
+    accessToken: { type: String },
+    refreshToken: { type: String },
     providers: {
       type: [UserProvider],
     },
