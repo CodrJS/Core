@@ -46,9 +46,16 @@ class Authentication {
     let secretKey = md5(process.env.SECRET as string);
     secretKey = Buffer.concat([secretKey, secretKey.subarray(0, 8)]);
     const decipher = crypto.createDecipheriv("des-ede3", secretKey, "");
-    let decrypted = decipher.update(text, "utf8", "hex");
+    let decrypted = decipher.update(text, "hex");
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     decrypted += decipher.final();
-    return decrypted;
+    return decrypted as unknown as string;
+  }
+
+  generateCode(payload: Record<string, any>) {
+    const data = JSON.stringify(payload);
+    return this.encrypt(data);
   }
 
   async signinWithEmail(
@@ -91,7 +98,7 @@ class Authentication {
             ),
           });
 
-          // send email with magic link
+          // send email with access code/token
           const link =
             process.env["DOMAIN"] +
             "/auth/email/verify?token=" +
