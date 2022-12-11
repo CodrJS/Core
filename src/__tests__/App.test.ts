@@ -13,7 +13,8 @@ describe("App configuration", () => {
   };
   const instance2 = JSON.parse(JSON.stringify(instance1));
   delete instance2.contact;
-  const databaseUri = "mongodb://someUser:abc123@server-a9.host.com:41653,server-a2.host.com/testdb-2?replicaSet=rs-some2";
+  const databaseUri =
+    "mongodb://someUser:abc123@server-a9.host.com:1234,server-a2.host.com/testdb-2?replicaSet=rs-some2&replicaSet2=rs-some.2";
 
   // create app from Codr singleton
   const app1 = new App({ databaseUri: databaseUri, instance: instance1 });
@@ -22,12 +23,12 @@ describe("App configuration", () => {
 
   it("does not throw an error", () => {
     expect(app1.databaseUri).toBe(
-      "mongodb://someUser:abc123@server-a9.host.com:41653,server-a2.host.com/testdb-2?replicaSet=rs-some2",
+      "mongodb://someUser:abc123@server-a9.host.com:1234,server-a2.host.com/testdb-2?replicaSet=rs-some2&replicaSet2=rs-some.2",
     );
     expect(app1.instance?.contact?.name).toEqual("Dylan");
 
     expect(app2.databaseUri).toBe(
-      "mongodb://someUser:abc123@server-a9.host.com:41653,server-a2.host.com/testdb-2?replicaSet=rs-some2",
+      "mongodb://someUser:abc123@server-a9.host.com:1234,server-a2.host.com/testdb-2?replicaSet=rs-some2&replicaSet2=rs-some.2",
     );
     expect(app2.instance?.name).toEqual("My App Instance");
   });
