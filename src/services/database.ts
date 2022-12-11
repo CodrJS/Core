@@ -3,10 +3,10 @@
  */
 
 import { UserToken } from "classes/JWT";
-import Profile from "models/Profile";
-import ProfileAbility from "models/Profile.ability";
-import User from "models/User";
-import UserAbility from "models/User.ability";
+import Profile from "../models/Profile";
+import ProfileAbility from "../models/Profile.ability";
+import User from "../models/User";
+import UserAbility from "../models/User.ability";
 import App from "./app";
 
 class Database {
