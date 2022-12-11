@@ -63,7 +63,7 @@ class Authentication {
 
           // send email with access code/token
           const link =
-            process.env["API_URL"] +
+            `${process.env.HOST}${process.env.API_PATH}` +
             "/auth/email/verify?token=" +
             encrypt(JSON.stringify({ email: email, token: uuid }));
           const template = new SigninTemplate();
