@@ -13,7 +13,11 @@ interface IAccessToken {
 }
 
 export function isAccessToken(obj: any): obj is IAccessToken {
-  return "uuid" in obj;
+  if (obj instanceof Object) {
+    return "uuid" in obj;
+  } else {
+    return false;
+  }
 }
 
 export function isUuid(text: any): text is typeof v4 {
@@ -50,23 +54,34 @@ class AccessToken {
   public constructor(encoded: string);
   public constructor(token: IAccessToken);
   public constructor(arg: typeof v4 | string | IAccessToken) {
-    if (isUuid(arg)) {
-      this.uuid = arg;
-      this.createdAt = new Date().toISOString();
-      this.expired = false;
-    } else if (typeof arg === "string") {
-      const code = decrypt<AccessToken>(<string>arg);
-      this.uuid = code.uuid;
-      this.createdAt = code.createdAt;
-      this.expired = code.expired;
-    } else if (isAccessToken(arg)) {
-      this.uuid = arg.uuid;
-      this.createdAt = arg.createdAt;
-      this.expired = arg.expired;
+    if (arg) {
+      if (isUuid(arg)) {
+        this.uuid = arg;
+        this.createdAt = new Date().toISOString();
+        this.expired = false;
+      } else if (typeof arg === "string") {
+        try {
+          const code = decrypt<AccessToken>(<string>arg);
+          this.uuid = code.uuid;
+          this.createdAt = code.createdAt;
+          this.expired = code.expired;
+        } catch (e: any) {
+          throw new Error({ status: 500, message: e?.message });
+        }
+      } else if (isAccessToken(arg)) {
+        this.uuid = arg.uuid;
+        this.createdAt = arg.createdAt;
+        this.expired = arg.expired;
+      } else {
+        throw new Error({
+          status: 500,
+          message: "Invalid argument given in AccessToken",
+        });
+      }
     } else {
       throw new Error({
-        status: 400,
-        message: "Invalid argument given in AccessToken",
+        status: 500,
+        message: "AccessToken requires an argument in the constructor",
       });
     }
   }

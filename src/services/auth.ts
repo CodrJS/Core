@@ -31,17 +31,18 @@ class Authentication {
   async signinWithEmail(
     accessCode: string,
   ): Promise<Response<undefined | { token: string }>> {
-    const { email, token: accessToken } = decrypt<IAccessCode>(accessCode);
-    if (!email)
+    const { email, token } = decrypt<IAccessCode>(accessCode);
+    if (!email) {
       throw new Error({
         status: 400,
         message: "No email address was received",
       });
-    if (!new Email(email).isValid)
+    } else if (!new Email(email).isValid) {
       throw new Error({
         status: 400,
         message: "Invalid email address provided",
       });
+    }
 
     try {
       const user = await User.findOne({ email });
@@ -52,12 +53,12 @@ class Authentication {
           message:
             "It appears you do not have an account using this email, please contact your Codr admin to gain access.",
         });
-      } else if (!accessToken) {
+      } else if (!token) {
         try {
           // init access token
           const uuid = uuidv4();
           const accessToken = new AccessToken(uuid);
-          await user.update({
+          await user.updateOne({
             accessToken: accessToken.encode(),
           });
 
@@ -82,33 +83,45 @@ class Authentication {
         }
       } else if (user.accessToken) {
         // decrypt the stored access code
-        const accessCode = new AccessToken(user.accessToken);
+        const accessToken = new AccessToken(user.accessToken);
 
         // check if:
         // * the tokens match
         // * the token was created less than 5 minutes ago
         // * and the token is not expired (has not been used already)
         if (
-          accessCode.toJSON().uuid == accessToken &&
+          accessToken.toJSON().uuid == token &&
           new Date().getTime() <
-            new Date(accessCode.toJSON().createdAt).getTime() + 5 * 60 * 1000 &&
-          !accessCode.toJSON().expired
+            new Date(accessToken.toJSON().createdAt).getTime() +
+              5 * 60 * 1000 &&
+          !accessToken.toJSON().expired
         ) {
           // generate JWT token
           const token = generateToken(user);
 
           // update access code
-          accessCode.use();
+          accessToken.use();
 
           // update user
-          await user.updateOne({
-            accessToken: accessCode.encode(),
-            refreshToken: new AccessToken(uuidv4()).encode(),
-          });
-          return new Response<{ token: string }>({
-            message: `Login successful.`,
-            details: { token },
-          });
+          return user
+            .updateOne({
+              accessToken: accessToken.encode(),
+              refreshToken: new AccessToken(uuidv4()).encode(),
+            })
+            .then(() => {
+              return new Response<{ token: string }>({
+                message: `Login successful.`,
+                details: { token },
+              });
+            })
+            .catch(e => {
+              throw new Error({
+                status: 500,
+                message:
+                  e?.message ||
+                  "An unexpected error occured while updating a user.",
+              });
+            });
         } else
           throw new Error({
             status: 500,

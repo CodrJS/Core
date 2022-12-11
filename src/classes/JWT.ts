@@ -20,7 +20,7 @@ export function verifyToken(token: string) {
       const decoded = jwt.verify(token, <string>process.env.JWT_SECRET, {
         issuer: process.env.JWT_ISSUER,
       });
-      return decoded;
+      return decoded as UserToken;
     } catch (e) {
       throw new Error({ status: 401, message: "Could not verify the JWT." });
     }
