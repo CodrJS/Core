@@ -1,7 +1,23 @@
 import { EmailRegex } from "../classes/Email";
 import { Schema, model } from "mongoose";
 
-const UserProvider = new Schema({
+interface IUserProvider {
+  photo?: string;
+  phone?: string;
+  email: string;
+  uid: string;
+}
+
+export interface IUser {
+  name?: string;
+  email: string;
+  accessToken: string;
+  refreshToken: string;
+  providers?: IUserProvider;
+  isAdmin: boolean;
+}
+
+const UserProvider = new Schema<IUserProvider>({
   photo: { type: String },
   phone: { type: String },
   email: { type: String, required: true },
@@ -9,7 +25,7 @@ const UserProvider = new Schema({
 });
 
 /* UserSchema will correspond to a collection in your MongoDB database. */
-const UserSchema = new Schema(
+const UserSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -43,60 +59,6 @@ const UserSchema = new Schema(
   },
   {
     timestamps: true,
-    virtuals: {
-      firstName: {
-        get() {
-          const displayNameRegex =
-            /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;
-          const result = displayNameRegex.exec(<string>this.name);
-
-          // set name data
-          if (result?.groups) {
-            const { firstName } = result.groups;
-            return firstName;
-          }
-        },
-      },
-      lastName: {
-        get() {
-          const displayNameRegex =
-            /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;
-          const result = displayNameRegex.exec(<string>this.name);
-
-          // set name data
-          if (result?.groups) {
-            const { lastName } = result.groups;
-            return lastName;
-          }
-        },
-      },
-      preferredName: {
-        get() {
-          const displayNameRegex =
-            /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;
-          const result = displayNameRegex.exec(<string>this.name);
-
-          // set name data
-          if (result?.groups) {
-            const { preferredName } = result.groups;
-            return preferredName;
-          }
-        },
-      },
-      fullname: {
-        get() {
-          const displayNameRegex =
-            /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;
-          const result = displayNameRegex.exec(<string>this.name);
-
-          // set name data
-          if (result?.groups) {
-            const { firstName, lastName } = result.groups;
-            return firstName + " " + lastName;
-          }
-        },
-      },
-    },
     methods: {
       // generateJWT: {
       //   get() {
@@ -117,6 +79,54 @@ const UserSchema = new Schema(
   },
 );
 
+UserSchema.virtual("firstName").get(function get() {
+  const displayNameRegex =
+    /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;
+  const result = displayNameRegex.exec(<string>this.name);
+
+  // set name data
+  if (result?.groups) {
+    const { firstName } = result.groups;
+    return firstName;
+  }
+});
+
+UserSchema.virtual("lastName").get(function get() {
+  const displayNameRegex =
+    /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;
+  const result = displayNameRegex.exec(<string>this.name);
+
+  // set name data
+  if (result?.groups) {
+    const { lastName } = result.groups;
+    return lastName;
+  }
+});
+
+UserSchema.virtual("perferredName").get(function get() {
+  const displayNameRegex =
+    /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;
+  const result = displayNameRegex.exec(<string>this.name);
+
+  // set name data
+  if (result?.groups) {
+    const { preferredName } = result.groups;
+    return preferredName;
+  }
+});
+
+UserSchema.virtual("fullName").get(function get() {
+  const displayNameRegex =
+    /(?<lastName>\w+),(?<firstName>\w+)<?(?<preferredName>\w+)?>?/gm;
+  const result = displayNameRegex.exec(<string>this.name);
+
+  // set name data
+  if (result?.groups) {
+    const { firstName, lastName } = result.groups;
+    return firstName + " " + lastName;
+  }
+});
+
 // exports User model.
-const User = model("User", UserSchema);
+const User = model<IUser>("User", UserSchema);
 export default User;

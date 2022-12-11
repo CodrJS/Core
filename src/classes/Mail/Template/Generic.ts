@@ -102,7 +102,7 @@ export default class GenericTemplate<T extends string>
       <br /><br />
       Best,<br />
       Your Codr Team<br />
-      support@codrjs.com<br />
+      support@codrjs.com
     </div>
   </div>
 </body>`.replace(/[\n]*/g, "");

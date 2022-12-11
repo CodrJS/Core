@@ -11,15 +11,11 @@ import User from "../models/User";
 import Response from "classes/Response";
 import { generateToken } from "classes/JWT";
 import Error from "../classes/Error";
-import crypto from "crypto";
-
-const md5 = (text: string) => {
-  return crypto.createHash("md5").update(text).digest();
-};
+import AccessToken, { decrypt, encrypt } from "classes/AccessToken";
 
 interface IAccessCode {
   email: string;
-  token: string;
+  token: typeof uuidv4;
 }
 
 class Authentication {
@@ -32,38 +28,10 @@ class Authentication {
 
   // }
 
-  // for encrypting AccessCode object into a string
-  private encrypt(text: string) {
-    let secretKey = md5(process.env.SECRET as string);
-    secretKey = Buffer.concat([secretKey, secretKey.subarray(0, 8)]);
-    const cipher = crypto.createCipheriv("des-ede3", secretKey, "");
-    const encrypted = cipher.update(text, "utf8", "hex");
-    return encrypted + cipher.final("hex");
-  }
-
-  // for decrypting AccessCode string into an object
-  private decrypt(text: string) {
-    let secretKey = md5(process.env.SECRET as string);
-    secretKey = Buffer.concat([secretKey, secretKey.subarray(0, 8)]);
-    const decipher = crypto.createDecipheriv("des-ede3", secretKey, "");
-    let decrypted = decipher.update(text, "hex");
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    decrypted += decipher.final();
-    return decrypted as unknown as string;
-  }
-
-  generateCode(payload: Record<string, any>) {
-    const data = JSON.stringify(payload);
-    return this.encrypt(data);
-  }
-
   async signinWithEmail(
     accessCode: string,
   ): Promise<Response<undefined | { token: string }>> {
-    const { email, token: accessToken } = JSON.parse(
-      this.decrypt(accessCode),
-    ) as IAccessCode;
+    const { email, token: accessToken } = decrypt<IAccessCode>(accessCode);
     if (!email)
       throw new Error({
         status: 400,
@@ -82,27 +50,22 @@ class Authentication {
         throw new Error({
           status: 401,
           message:
-            "It appears you do not have an account using this email, please contact the organization admin to gain access.",
+            "It appears you do not have an account using this email, please contact your Codr admin to gain access.",
         });
       } else if (!accessToken) {
         try {
           // init access token
-          const accessToken = uuidv4();
+          const uuid = uuidv4();
+          const accessToken = new AccessToken(uuid);
           await user.update({
-            accessToken: this.encrypt(
-              JSON.stringify({
-                value: accessToken,
-                createdAt: new Date().toISOString(),
-                exprired: false,
-              }),
-            ),
+            accessToken: accessToken.encode(),
           });
 
           // send email with access code/token
           const link =
-            process.env["DOMAIN"] +
+            process.env["API_URL"] +
             "/auth/email/verify?token=" +
-            this.encrypt(JSON.stringify({ email: email, token: accessToken }));
+            encrypt(JSON.stringify({ email: email, token: uuid }));
           const template = new SigninTemplate();
           await Mail.send(await template.html({ link }), {
             ...template.config,
@@ -118,31 +81,29 @@ class Authentication {
           });
         }
       } else if (user.accessToken) {
-        const accessCode = JSON.parse(this.decrypt(user.accessToken)) as {
-          value: string;
-          createdAt: string;
-          expired: boolean;
-        };
+        // decrypt the stored access code
+        const accessCode = new AccessToken(user.accessToken);
+
+        // check if:
+        // * the tokens match
+        // * the token was created less than 5 minutes ago
+        // * and the token is not expired (has not been used already)
         if (
-          accessCode?.value == accessToken &&
+          accessCode.toJSON().value == accessToken &&
           new Date().getTime() <
-            new Date(accessCode?.createdAt).getTime() + 5 * 60 * 1000
+            new Date(accessCode.toJSON().createdAt).getTime() + 5 * 60 * 1000 &&
+          !accessCode.toJSON().expired
         ) {
           // generate JWT token
-          const token = generateToken(user.toJSON());
+          const data = { ...user.toJSON(), _id: user._id.toString() };
+          const token = generateToken(data);
+
+          accessCode.use();
 
           // update user
           await user.updateOne({
-            accessToken: this.encrypt(
-              JSON.stringify({ ...accessCode, expired: true }),
-            ),
-            refreshToken: this.encrypt(
-              JSON.stringify({
-                value: uuidv4(),
-                createdAt: new Date().toISOString(),
-                expired: false,
-              }),
-            ),
+            accessToken: accessCode.encode(),
+            refreshToken: new AccessToken(uuidv4()).encode(),
           });
           return new Response<{ token: string }>({
             message: `Login successful.`,
