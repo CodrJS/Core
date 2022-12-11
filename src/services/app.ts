@@ -26,8 +26,8 @@ interface AppOptions {
  */
 class App implements AppOptions {
   databaseUri: AppOptions["databaseUri"];
-  database?: Mongoose;
   instance: AppOptions["instance"];
+  private mongo?: Mongoose;
 
   constructor(options: AppOptions) {
     if (options?.databaseUri) {
@@ -47,11 +47,15 @@ class App implements AppOptions {
     this.connect();
   }
 
+  get mongoIsConnected() {
+    return this.mongo?.connection.readyState === 1
+  }
+
   private async connect() {
     try {
       // connect to the database.
-      this.database = await mongoose.connect(this.databaseUri);
-      this.database.plugin(accessibleRecordsPlugin);
+      this.mongo = await mongoose.connect(this.databaseUri);
+      this.mongo.plugin(accessibleRecordsPlugin);
 
       // try to create an admin user.
       try {
@@ -62,7 +66,7 @@ class App implements AppOptions {
             User.create({ email, isAdmin: true });
           }
         } else {
-          console.log("An admin email could not be found.")
+          console.log("An admin email could not be found.");
         }
       } catch (e) {
         console.error("Could not create an admin user.");

@@ -1,31 +1,28 @@
-import { Schema, model } from "mongoose";
+import { AccessibleRecordModel } from "@casl/mongoose";
+import { Schema, model, Document } from "mongoose";
 
-/* UserSchema will correspond to a collection in your MongoDB database. */
-const UserProfileSchema = new Schema(
-  {},
+export interface IProfile extends Document {
+  username: string;
+  userId: Schema.Types.ObjectId;
+}
+
+const ProfileSchema = new Schema<IProfile>(
+  {
+    username: { type: String, required: true },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
   {
     timestamps: true,
-    virtuals: {},
-    methods: {
-      // generateJWT: {
-      //   get() {
-      //     const today = new Date();
-      //     const exp = new Date(today);
-      //     exp.setDate(today.getDate() + 7); // set expiration 7 days out.
-      //     return sign(
-      //       {
-      //         id: this._id,
-      //         displayName: this.virtuals.preferredName,
-      //         exp: exp.getTime() / 1000,
-      //       },
-      //       process.env.SECRET as string,
-      //     );
-      //   },
-      // },
-    },
   },
 );
 
 // exports User model.
-const UserProfile = model("UserProfile", UserProfileSchema);
-export default UserProfile;
+const Profile = model<IProfile, AccessibleRecordModel<IProfile>>(
+  "Profile",
+  ProfileSchema,
+);
+export default Profile;

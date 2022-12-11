@@ -6,6 +6,8 @@ const isPayload = function isPayload(obj: any): obj is JwtPayload {
   return "iss" in obj;
 };
 
+export type UserToken = IUser & JwtPayload;
+
 export function verifyToken(token: string) {
   const bearerRegex = /^Bearer\s/;
 
@@ -54,7 +56,7 @@ export function refreshToken(token: string) {
   }
 }
 
-export function generateToken(payload: IUser & { _id: string }) {
+export function generateToken(payload: IUser) {
   try {
     const signOpts: jwt.SignOptions = {
       issuer: process.env.JWT_ISSUER,

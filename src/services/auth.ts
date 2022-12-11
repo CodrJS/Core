@@ -95,9 +95,9 @@ class Authentication {
           !accessCode.toJSON().expired
         ) {
           // generate JWT token
-          const data = { ...user.toJSON(), _id: user._id.toString() };
-          const token = generateToken(data);
+          const token = generateToken(user);
 
+          // update access code
           accessCode.use();
 
           // update user
