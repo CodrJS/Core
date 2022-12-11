@@ -89,7 +89,7 @@ class Authentication {
         // * the token was created less than 5 minutes ago
         // * and the token is not expired (has not been used already)
         if (
-          accessCode.toJSON().value == accessToken &&
+          accessCode.toJSON().uuid == accessToken &&
           new Date().getTime() <
             new Date(accessCode.toJSON().createdAt).getTime() + 5 * 60 * 1000 &&
           !accessCode.toJSON().expired

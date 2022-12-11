@@ -1,4 +1,4 @@
-import { v4 } from "uuid";
+import { v4, validate } from "uuid";
 import crypto from "crypto";
 import Error from "./Error";
 
@@ -14,6 +14,10 @@ interface IAccessToken {
 
 export function isAccessToken(obj: any): obj is IAccessToken {
   return "uuid" in obj;
+}
+
+export function isUuid(text: any): text is typeof v4 {
+  return validate(text);
 }
 
 // for encrypting AccessCode object into a string
@@ -46,28 +50,25 @@ class AccessToken {
   public constructor(encoded: string);
   public constructor(token: IAccessToken);
   public constructor(arg: typeof v4 | string | IAccessToken) {
-    if (typeof arg === "string" || typeof arg === typeof v4) {
-      if (
-        (<string>arg).match(
-          /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i,
-        )
-      ) {
-        this.uuid = <typeof v4>arg;
-        this.createdAt = new Date().toISOString();
-        this.expired = false;
-      } else {
-        const code = decrypt<AccessToken>(<string>arg);
-        this.uuid = code.uuid;
-        this.createdAt = code.createdAt;
-        this.expired = code.expired;
-      }
+    if (isUuid(arg)) {
+      this.uuid = arg;
+      this.createdAt = new Date().toISOString();
+      this.expired = false;
+    } else if (typeof arg === "string") {
+      const code = decrypt<AccessToken>(<string>arg);
+      this.uuid = code.uuid;
+      this.createdAt = code.createdAt;
+      this.expired = code.expired;
     } else if (isAccessToken(arg)) {
       this.uuid = arg.uuid;
       this.createdAt = arg.createdAt;
       this.expired = arg.expired;
+    } else {
+      throw new Error({
+        status: 400,
+        message: "Invalid argument given in AccessToken",
+      });
     }
-
-    throw new Error({ status: 400, message: "Invailid input given" });
   }
 
   use() {
@@ -76,7 +77,7 @@ class AccessToken {
 
   toJSON() {
     return {
-      value: this.uuid,
+      uuid: this.uuid,
       createdAt: this.createdAt,
       expired: this.expired,
     };
