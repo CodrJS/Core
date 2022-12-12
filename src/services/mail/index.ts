@@ -22,7 +22,7 @@
  *    b. Other (general system notifications; user feedback, welcome message, etc.)
  */
 
-import send from "./send";
+import send from "./send.js";
 
 const Mail = { send };
 

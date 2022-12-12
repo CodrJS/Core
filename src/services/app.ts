@@ -5,7 +5,7 @@
  */
 
 import { accessibleRecordsPlugin } from "@casl/mongoose";
-import User from "../models/User";
+import User from "../models/User.js";
 import mongoose, { Mongoose } from "mongoose";
 
 interface AppOptions {
@@ -44,11 +44,12 @@ class App implements AppOptions {
       throw new Error("No instance data was given.");
     }
 
-    this.connect();
+    // manually connect to database.
+    // this.connect();
   }
 
   get mongoIsConnected() {
-    return this.mongo?.connection.readyState === 1
+    return this.mongo?.connection.readyState === 1;
   }
 
   private async connect() {
@@ -66,15 +67,18 @@ class App implements AppOptions {
             User.create({ email, isAdmin: true });
           }
         } else {
-          console.log("An admin email could not be found.");
+          throw new Error(
+            "An admin email could not be found.\nPlease add the env var: ADMIN_EMAIL",
+          );
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error("Could not create an admin user.");
-        console.error(e);
+        throw new Error(e?.message);
       }
     } catch (e) {
-      console.error("Cannot connect to MongoDB server.");
-      console.error(e);
+      throw new Error(
+        "Could not connect to the MongoDB server.",
+      );
     }
   }
 }

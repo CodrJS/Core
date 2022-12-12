@@ -1,6 +1,6 @@
 import { v4, validate } from "uuid";
 import crypto from "crypto";
-import Error from "./Error";
+import Error from "./Error.js";
 
 const md5 = (text: string) => {
   return crypto.createHash("md5").update(text).digest();
@@ -88,6 +88,18 @@ class AccessToken {
 
   use() {
     this.expired = true;
+  }
+
+  isValid(uuid: typeof v4) {
+    return (
+      // uuids match
+      this.uuid == uuid &&
+      // token was created less than 5 minutes ago
+      new Date().getTime() <
+        new Date(this.createdAt).getTime() + 5 * 60 * 1000 &&
+      // and this token has not expired.
+      !this.expired
+    );
   }
 
   toJSON() {

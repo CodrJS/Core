@@ -3,15 +3,15 @@
  */
 
 import { v4 as uuidv4 } from "uuid";
-import App from "./app";
-import Mail from "./mail";
-import Email from "../classes/Email";
-import SigninTemplate from "../classes/Mail/Template/Signin";
-import User from "../models/User";
-import Response from "classes/Response";
-import { generateToken } from "classes/JWT";
-import Error from "../classes/Error";
-import AccessToken, { decrypt, encrypt } from "classes/AccessToken";
+import App from "./app.js";
+import Mail from "./mail/index.js";
+import Email from "../classes/Email.js";
+import SigninTemplate from "../classes/Mail/Template/Signin.js";
+import User from "../models/User.js";
+import Response from "../classes/Response.js";
+import { generateToken } from "../classes/JWT.js";
+import Error from "../classes/Error.js";
+import AccessToken, { decrypt, encrypt } from "../classes/AccessToken.js";
 
 interface IAccessCode {
   email: string;
@@ -89,13 +89,7 @@ class Authentication {
         // * the tokens match
         // * the token was created less than 5 minutes ago
         // * and the token is not expired (has not been used already)
-        if (
-          accessToken.toJSON().uuid == token &&
-          new Date().getTime() <
-            new Date(accessToken.toJSON().createdAt).getTime() +
-              5 * 60 * 1000 &&
-          !accessToken.toJSON().expired
-        ) {
+        if (accessToken.isValid(token)) {
           // generate JWT token
           const token = generateToken(user);
 
@@ -127,11 +121,13 @@ class Authentication {
             status: 500,
             message: "Login link expired or is invalid.",
           });
-      } else
+      } else {
         throw new Error({
           status: 500,
-          message: "Login link expired or is invalid.",
+          message:
+            "An unknown error occured while authenticating an access token.",
         });
+      }
     } catch (e: any) {
       throw new Error({
         status: 500,

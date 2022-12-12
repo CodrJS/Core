@@ -2,7 +2,7 @@
  * This service handles all annotator handlers for codr.
  */
 
-import App from "./app";
+import App from "./app.js";
 
 class Annotator {
   private app: App;

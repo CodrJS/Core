@@ -1,4 +1,4 @@
-import ProjectConfiguration, { ConfigOptions } from "../classes/ProjectConfig";
+import ProjectConfiguration, { ConfigOptions } from "../classes/ProjectConfig.js";
 import options from "../examples/project.json";
 
 describe("Project Configuration", () => {

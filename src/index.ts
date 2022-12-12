@@ -1,4 +1,4 @@
-export { default as App } from "./services/app";
-export { default as Mail } from "./services/mail";
-export { default as Authentication } from "./services/auth";
-export { default as Database } from "./services/database";
+export { default as App } from "./services/app.js";
+export { default as Mail } from "./services/mail/index.js";
+export { default as Authentication } from "./services/auth.js";
+export { default as Database } from "./services/database.js";

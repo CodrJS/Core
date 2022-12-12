@@ -1,4 +1,4 @@
-import GenericTemplate from "./Generic";
+import GenericTemplate from "./Generic.js";
 
 type RequiredParamsType = "name" | "link";
 export default class WelcomeTemplate extends GenericTemplate<RequiredParamsType> {

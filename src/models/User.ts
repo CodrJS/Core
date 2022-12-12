@@ -1,4 +1,4 @@
-import { EmailRegex } from "../classes/Email";
+import { EmailRegex } from "../classes/Email.js";
 import { Schema, model, Document } from "mongoose";
 import { AccessibleRecordModel } from "@casl/mongoose";
 

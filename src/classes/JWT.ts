@@ -1,6 +1,6 @@
 import jwt, { Algorithm, JwtPayload } from "jsonwebtoken";
-import type { IUser } from "../models/User";
-import Error from "./Error";
+import type { IUser } from "../models/User.js";
+import Error from "./Error.js";
 
 const isPayload = function isPayload(obj: any): obj is JwtPayload {
   return "iss" in obj;
@@ -61,7 +61,7 @@ export function generateToken(payload: IUser) {
     const signOpts: jwt.SignOptions = {
       issuer: process.env.JWT_ISSUER,
       algorithm: <Algorithm>process.env.JWT_ALGORITHM,
-      subject: payload._id,
+      subject: payload?._id,
     };
     return jwt.sign(payload, <string>process.env.JWT_SECRET, signOpts);
   } catch (err) {

@@ -1,4 +1,4 @@
-import Response, { IResponse } from "./Response";
+import Response, { IResponse } from "./Response.js";
 
 interface IError {
   status: number;

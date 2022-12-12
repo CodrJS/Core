@@ -3,9 +3,9 @@
  */
 // import fs from "fs";
 // import path from "path";
-import client from "./client";
-import verify from "./verify";
-import { EmailOptions } from "../../types/mail";
+import client from "./client.js";
+import verify from "./verify.js";
+import { EmailOptions } from "../../types/mail.js";
 
 /**
  *

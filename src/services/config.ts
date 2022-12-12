@@ -2,7 +2,7 @@
  * This service handles all configuration handlers for codr.
  */
 
-import App from "./app";
+import App from "./app.js";
 
 class Configuration {
   private app: App;

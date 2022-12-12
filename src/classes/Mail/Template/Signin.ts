@@ -1,4 +1,4 @@
-import GenericTemplate from "./Generic";
+import GenericTemplate from "./Generic.js";
 
 type RequiredParamsType = "link";
 export default class SigninTemplate extends GenericTemplate<RequiredParamsType> {

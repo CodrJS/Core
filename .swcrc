@@ -3,14 +3,19 @@
   "jsc": {
     "parser": {
       "syntax": "typescript",
-      "dynamicImport": true
+      "dynamicImport": true,
+      "dts": true,
+      "tsx": false,
+      "decorators": true
     },
     "baseUrl": "./src",
     "paths": {
       "classes/*": ["classes/*"],
-      "types/*": ["types/*"],
-      "utils/*": ["utils/*"]
-    }
+      "models/*": ["models/*"],
+      "services/*": ["services/*"],
+      "types/*": ["types/*"]
+    },
+    "target": "es2022"
   },
   "env": {
     "targets": {
@@ -18,7 +23,7 @@
     }
   },
   "module": {
-    "type": "commonjs"
+    "type": "es6"
   },
   "minify": true
 }

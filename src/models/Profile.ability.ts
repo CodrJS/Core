@@ -1,5 +1,5 @@
 import { defineAbility } from "@casl/ability";
-import { IUser } from "./User";
+import { IUser } from "./User.js";
 
 export default function ProfileAbility(user: IUser) {
   return defineAbility(can => {

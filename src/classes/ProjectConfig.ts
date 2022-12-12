@@ -1,5 +1,5 @@
 import { Schema } from "jsonschema";
-import Colors, { BgColorType } from "types/Colors";
+import Colors, { BgColorType } from "../types/Colors.js";
 
 // classification and translation to be implemented first
 type TaskType = "classification" | "tagging" | "code-tagging" | "translation";
