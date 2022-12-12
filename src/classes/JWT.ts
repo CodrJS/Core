@@ -64,7 +64,10 @@ export function generateToken(payload: IUser) {
       subject: payload?._id,
     };
     return jwt.sign(payload, <string>process.env.JWT_SECRET, signOpts);
-  } catch (err) {
-    throw new Error({ status: 500, message: <string>err });
+  } catch (err: any) {
+    throw new Error({
+      status: 500,
+      message: err?.message || "Could generate the JWT token",
+    });
   }
 }
