@@ -61,13 +61,13 @@ export function generateToken(payload: IUser) {
     const signOpts: jwt.SignOptions = {
       issuer: process.env.JWT_ISSUER,
       algorithm: <Algorithm>process.env.JWT_ALGORITHM,
-      subject: payload?._id,
+      subject: payload._id,
     };
     return jwt.sign(payload, <string>process.env.JWT_SECRET, signOpts);
   } catch (err: any) {
     throw new Error({
       status: 500,
-      message: err?.message || "Could generate the JWT token",
+      message: err?.message || "Couldn't generate the JWT token",
     });
   }
 }

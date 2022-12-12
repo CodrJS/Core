@@ -103,9 +103,17 @@ class Authentication {
         try {
           // update user
           await user.updateOne(update);
+        } catch (e: any) {
+          throw new Error({
+            status: 500,
+            message: "An unexpected error occured while updating a user.",
+            details: e,
+          });
+        }
 
+        try {
           // generate JWT token
-          const token = generateToken({ ...user, ...update } as IUser);
+          const token = generateToken({ ...user.toJSON(), ...update } as IUser);
 
           // send response
           return new Response<{ token: string }>({
@@ -115,15 +123,16 @@ class Authentication {
         } catch (e: any) {
           throw new Error({
             status: 500,
-            message: "An unexpected error occured while updating a user.",
-            details: e,
+            message:
+              "An unexpected error occured while generating a JSON web token.",
           });
         }
-      } else
+      } else {
         throw new Error({
           status: 500,
           message: "Login link expired or is invalid.",
         });
+      }
     } else {
       throw new Error({
         status: 500,
