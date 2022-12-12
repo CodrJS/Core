@@ -7,7 +7,7 @@ import App from "./app.js";
 import Mail from "./mail/index.js";
 import Email from "../classes/Email.js";
 import SigninTemplate from "../classes/Mail/Template/Signin.js";
-import User from "../models/User.js";
+import User, { IUser } from "../models/User.js";
 import Response from "../classes/Response.js";
 import { generateToken } from "../classes/JWT.js";
 import Error from "../classes/Error.js";
@@ -90,32 +90,36 @@ class Authentication {
         // * the token was created less than 5 minutes ago
         // * and the token is not expired (has not been used already)
         if (accessToken.isValid(token)) {
-          // generate JWT token
-          const token = generateToken(user);
 
-          // update access code
+          // update access token
           accessToken.use();
 
-          // update user
-          return user
-            .updateOne({
-              accessToken: accessToken.encode(),
-              refreshToken: new AccessToken(uuidv4()).encode(),
-            })
-            .then(() => {
-              return new Response<{ token: string }>({
-                message: `Login successful.`,
-                details: { token },
-              });
-            })
-            .catch(e => {
-              throw new Error({
-                status: 500,
-                message:
-                  e?.message ||
-                  "An unexpected error occured while updating a user.",
-              });
+          // init user update
+          const update = {
+            accessToken: accessToken.encode(),
+            refreshToken: new AccessToken(uuidv4()).encode(),
+          };
+
+          try {
+            // update user
+            await user.updateOne(update);
+
+            // generate JWT token
+            const token = generateToken({ ...user, ...update } as IUser);
+
+            // send response
+            return new Response<{ token: string }>({
+              message: `Login successful.`,
+              details: { token },
             });
+          } catch (e: any) {
+            throw new Error({
+              status: 500,
+              message:
+                e?.message ||
+                "An unexpected error occured while updating a user.",
+            });
+          }
         } else
           throw new Error({
             status: 500,
