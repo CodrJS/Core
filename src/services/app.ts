@@ -52,7 +52,10 @@ class App implements AppOptions {
     return this.mongo?.connection.readyState === 1;
   }
 
-  private async connect() {
+  /**
+   * @description Connect to the MongoDB instance.
+   */
+  async connect() {
     try {
       // connect to the database.
       this.mongo = await mongoose.connect(this.databaseUri);
