@@ -1,16 +1,27 @@
 {
   "name": "@codrjs/core",
-  "version": "1.0.6-patch2",
+  "version": "1.0.6-patch3",
   "description": "An open-sourced customizable annotation tool",
-  "main": "index.js",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "types": "./types/index.d.ts",
   "repository": "git@github.com:CodrJS/Core.git",
   "author": "Dylan Bulmer <dylan@dylanbulmer.com>",
   "license": "MIT",
   "type": "module",
   "private": false,
+  "exports": {
+    ".": {
+      "require": "./cjs/index.js",
+      "import": "./esm/index.js",
+      "types": "./types/index.d.ts"
+    }
+  },
   "scripts": {
     "test": "jest --config jest.config.json --passWithNoTests --coverage",
-    "build": "yarn clean && swc src -d lib --copy-files && tsc --emitDeclarationOnly && cp package.json README.md lib/",
+    "build:esm": "tsc --project tsconfig.esm.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build": "yarn clean && yarn build:cjs && yarn build:esm && cp package.json README.md lib/ && rm -rf ./lib/types/__tests__ && ./bin/post-build.sh",
     "clean": "rm -rf ./lib",
     "format": "prettier --write \"src/**/*.(ts|js)\"",
     "lint": "eslint -c .eslintrc.json --ignore-path .eslintignore --ext .ts src",

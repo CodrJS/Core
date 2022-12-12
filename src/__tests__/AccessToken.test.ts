@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
-import AccessToken, { decrypt, encrypt } from "../classes/AccessToken.js";
-import Error from "../classes/Error.js";
+import AccessToken from "../classes/AccessToken";
+import { decrypt, encrypt } from "../utils/AccessToken";
+import Error from "../classes/Error";
 
 dotenv.config();
 

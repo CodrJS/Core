@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { v4 as uuidv4 } from "uuid";
-import { App, Authentication } from "../index.js";
-import { encrypt } from "../classes/AccessToken.js";
+import { App, Authentication } from "../";
+import { encrypt } from "../utils/AccessToken";
 
 dotenv.config();
 

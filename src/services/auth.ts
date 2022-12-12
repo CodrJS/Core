@@ -6,12 +6,13 @@ import { v4 as uuidv4 } from "uuid";
 import App from "./app.js";
 import Mail from "./mail/index.js";
 import Email from "../classes/Email.js";
-import SigninTemplate from "../classes/Mail/Template/Signin.js";
+import SigninTemplate from "../classes/MailTemplate/Signin.js";
 import User, { IUser } from "../models/User.js";
 import Response from "../classes/Response.js";
 import { generateToken } from "../classes/JWT.js";
 import Error from "../classes/Error.js";
-import AccessToken, { decrypt, encrypt } from "../classes/AccessToken.js";
+import AccessToken from "../classes/AccessToken.js";
+import { decrypt, encrypt } from "../utils/AccessToken";
 
 interface IAccessCode {
   email: string;

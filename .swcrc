@@ -3,10 +3,7 @@
   "jsc": {
     "parser": {
       "syntax": "typescript",
-      "dynamicImport": true,
-      "dts": true,
-      "tsx": false,
-      "decorators": true
+      "dynamicImport": true
     },
     "baseUrl": "./src",
     "paths": {
@@ -15,7 +12,7 @@
       "services/*": ["services/*"],
       "types/*": ["types/*"]
     },
-    "target": "es2022"
+    "target": "es5"
   },
   "env": {
     "targets": {
