@@ -125,6 +125,7 @@ class Authentication {
             status: 500,
             message:
               "An unexpected error occured while generating a JSON web token.",
+            details: e?.details,
           });
         }
       } else {
