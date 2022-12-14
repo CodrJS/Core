@@ -9,10 +9,11 @@ import Email from "../classes/Email.js";
 import SigninTemplate from "../classes/MailTemplate/Signin.js";
 import User, { IUser } from "../models/User.js";
 import Response from "../classes/Response.js";
-import { generateToken } from "../classes/JWT.js";
+import { generateToken, verifyToken } from "../classes/JWT.js";
 import Error from "../classes/Error.js";
 import AccessToken from "../classes/AccessToken.js";
 import { decrypt, encrypt } from "../utils/AccessToken";
+import { decode } from "jsonwebtoken";
 
 interface IAccessCode {
   email: string;
@@ -141,6 +142,13 @@ class Authentication {
           "An unknown error occured while authenticating an access token.",
       });
     }
+  }
+
+  updateJWT(oldJWT: string, payload: IUser) {
+    verifyToken(oldJWT);
+
+    const jwt = generateToken(payload);
+    return { jwt, user: decode(jwt) };
   }
 }
 
