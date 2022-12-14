@@ -41,6 +41,16 @@ describe("Access Token and Access Code generation", () => {
     expect(token3.toJSON().uuid).toBe(uuid3);
   });
 
+  it("properly validates a token", () => {
+    expect(token2.isValid(uuid2 as unknown as typeof uuidv4)).toBe(true);
+  });
+
+  it("properly expires a token", () => {
+    token2.use();
+    expect(token2.isValid(uuid2 as unknown as typeof uuidv4)).toBe(false);
+    expect(token2.toJSON().expired).toBe(true);
+  });
+
   it("fails to generate a token", () => {
     const test1 = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

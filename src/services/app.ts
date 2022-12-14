@@ -3,8 +3,6 @@
  * it access to necessary configuration to access the database, authenticating
  * with the server, and other uses.
  */
-
-import { accessibleRecordsPlugin } from "@casl/mongoose";
 import User from "../models/User.js";
 import mongoose, { Mongoose } from "mongoose";
 
@@ -59,7 +57,6 @@ class App implements AppOptions {
     try {
       // connect to the database.
       this.mongo = await mongoose.connect(this.databaseUri);
-      this.mongo.plugin(accessibleRecordsPlugin);
 
       // try to create an admin user.
       try {

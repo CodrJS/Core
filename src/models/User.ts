@@ -1,6 +1,10 @@
 import { EmailRegex } from "../classes/Email.js";
+import {
+  accessibleFieldsPlugin,
+  AccessibleModel,
+  accessibleRecordsPlugin,
+} from "@casl/mongoose";
 import { Schema, model, Document } from "mongoose";
-import { AccessibleRecordModel } from "@casl/mongoose";
 
 interface IUserProvider {
   photo?: string;
@@ -77,5 +81,7 @@ UserSchema.virtual("fullName").get(function get() {
 });
 
 // exports User model.
-const User = model<IUser, AccessibleRecordModel<IUser>>("User", UserSchema);
+UserSchema.plugin(accessibleFieldsPlugin);
+UserSchema.plugin(accessibleRecordsPlugin);
+const User = model<IUser, AccessibleModel<IUser>>("User", UserSchema);
 export default User;

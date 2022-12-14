@@ -1,4 +1,8 @@
-import { AccessibleRecordModel } from "@casl/mongoose";
+import {
+  accessibleFieldsPlugin,
+  AccessibleModel,
+  accessibleRecordsPlugin,
+} from "@casl/mongoose";
 import { Schema, model, Document } from "mongoose";
 
 export interface IProfile extends Document {
@@ -8,7 +12,7 @@ export interface IProfile extends Document {
 
 const ProfileSchema = new Schema<IProfile>(
   {
-    username: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -21,7 +25,9 @@ const ProfileSchema = new Schema<IProfile>(
 );
 
 // exports User model.
-const Profile = model<IProfile, AccessibleRecordModel<IProfile>>(
+ProfileSchema.plugin(accessibleFieldsPlugin);
+ProfileSchema.plugin(accessibleRecordsPlugin);
+const Profile = model<IProfile, AccessibleModel<IProfile>>(
   "Profile",
   ProfileSchema,
 );

@@ -2,14 +2,13 @@
  * This service handles all configuration handlers for codr.
  */
 
-import { UserToken } from "../classes/JWT.js";
 import Profile, { IProfile } from "../models/Profile.js";
 import ProfileAbility from "../models/Profile.ability.js";
 import User, { IUser } from "../models/User.js";
 import UserAbility from "../models/User.ability.js";
 import App from "./app.js";
 import { QueryWithHelpers, Types } from "mongoose";
-import type { AccessibleRecordQueryHelpers } from "../../node_modules/@casl/mongoose/dist/types/accessible_records.js";
+import type { AccessibleRecordQueryHelpers } from "@casl/mongoose/dist/types/accessible_records.js";
 
 class Database {
   private app: App;
@@ -18,7 +17,7 @@ class Database {
   }
 
   User(
-    token: UserToken,
+    token: IUser,
   ): QueryWithHelpers<
     IUser[],
     IUser,
@@ -33,7 +32,7 @@ class Database {
     }
   }
 
-  Profile(token: UserToken): QueryWithHelpers<
+  Profile(token: IUser): QueryWithHelpers<
     (IProfile & {
       _id: Types.ObjectId;
     })[],
