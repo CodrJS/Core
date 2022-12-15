@@ -6,6 +6,9 @@ import {
 } from "@casl/mongoose";
 import { Schema, model, Document } from "mongoose";
 
+type Role = "admin" | "researcher" | "annotator";
+export type UserRoleType = `codr:${Role}`;
+
 interface IUserProvider {
   photo?: string;
   phone?: string;
@@ -13,7 +16,7 @@ interface IUserProvider {
   uid: string;
 }
 
-interface IUserName {
+export interface IUserName {
   first: string;
   last: string;
   preferred: string;
@@ -26,6 +29,7 @@ export interface IUser extends Document {
   refreshToken: string;
   providers?: IUserProvider;
   isAdmin: boolean;
+  role: UserRoleType;
 }
 
 const UserProvider = new Schema<IUserProvider>({
@@ -41,7 +45,7 @@ const UserProvider = new Schema<IUserProvider>({
 const UserName = new Schema<IUserName>({
   first: { type: String },
   last: { type: String },
-  preferred: { type: String, required: true },
+  preferred: { type: String },
 });
 
 const UserSchema = new Schema<IUser>(
@@ -66,9 +70,9 @@ const UserSchema = new Schema<IUser>(
     providers: {
       type: [UserProvider],
     },
-    isAdmin: {
-      type: Boolean,
-      default: false,
+    role: {
+      type: String,
+      required: [true, "Please specify the user's role."],
     },
   },
   {

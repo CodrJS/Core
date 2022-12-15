@@ -3,7 +3,7 @@ import { IUser } from "./User.js";
 
 export default function ProfileAbility(user: IUser) {
   return defineAbility(can => {
-    if (user.isAdmin) {
+    if (user.role === "codr:admin") {
       can("manage", "Profile");
     } else {
       can("create", "Profile", { userId: user._id });

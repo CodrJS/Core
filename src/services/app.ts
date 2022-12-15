@@ -50,6 +50,10 @@ class App implements AppOptions {
     return this.mongo?.connection.readyState === 1;
   }
 
+  get mongoStatus() {
+    return this.mongo?.ConnectionStates[this.mongo?.connection.readyState];
+  }
+
   /**
    * @description Connect to the MongoDB instance.
    */
@@ -64,11 +68,11 @@ class App implements AppOptions {
         if (email) {
           const user = await User.findOne({ email });
           if (!user) {
-            User.create({ email, isAdmin: true });
+            User.create({ email, role: "codr:admin" });
           }
         } else {
           throw new Error(
-            "An admin email could not be found.\nPlease add the env var: ADMIN_EMAIL",
+            'An admin email could not be found in order to create the default admin.\nPlease add the env var: ADMIN_EMAIL="youremail@domain.tld"',
           );
         }
       } catch (e: any) {
@@ -76,9 +80,7 @@ class App implements AppOptions {
         throw new Error(e?.message);
       }
     } catch (e) {
-      throw new Error(
-        "Could not connect to the MongoDB server.",
-      );
+      throw new Error("Could not connect to the MongoDB server.");
     }
   }
 }

@@ -5,11 +5,11 @@ export interface IResponse<Details> {
 
 export default class Response<Details = undefined> {
   message: IResponse<Details>["message"];
-  details: IResponse<Details>["details"];
+  details: Details;
 
-  constructor({ message, details = undefined }: IResponse<Details>) {
+  constructor({ message, details }: IResponse<Details>) {
     this.message = message;
-    this.details = details;
+    this.details = details as Details;
   }
 
   toJSON() {

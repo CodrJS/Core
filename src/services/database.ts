@@ -9,6 +9,7 @@ import UserAbility from "../models/User.ability.js";
 import App from "./app.js";
 import { QueryWithHelpers, Types } from "mongoose";
 import type { AccessibleRecordQueryHelpers } from "@casl/mongoose/dist/types/accessible_records.js";
+import Error from "../classes/Error.js";
 
 class Database {
   private app: App;
@@ -28,7 +29,7 @@ class Database {
       const query = User.accessibleBy(UserAbility(token));
       return query;
     } else {
-      throw Error("MongoDB is not connected");
+      throw new Error({ status: 500, message: "MongoDB is not connected." });
     }
   }
 
@@ -46,7 +47,9 @@ class Database {
   > {
     if (this.app.mongoIsConnected)
       return Profile.accessibleBy(ProfileAbility(token));
-    else throw Error("MongoDB is not connected");
+    else {
+      throw new Error({ status: 500, message: "MongoDB is not connected." });
+    }
   }
 }
 

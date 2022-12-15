@@ -9,7 +9,7 @@ import Email from "../classes/Email.js";
 import SigninTemplate from "../classes/MailTemplate/Signin.js";
 import User, { IUser } from "../models/User.js";
 import Response from "../classes/Response.js";
-import { generateToken, verifyToken } from "../classes/JWT.js";
+import { generateToken, UserToken, verifyToken } from "../classes/JWT.js";
 import Error from "../classes/Error.js";
 import AccessToken from "../classes/AccessToken.js";
 import { decrypt, encrypt } from "../utils/AccessToken";
@@ -148,7 +148,7 @@ class Authentication {
     verifyToken(oldJWT);
 
     const jwt = generateToken(payload);
-    return { jwt, user: decode(jwt) };
+    return { jwt, user: decode(jwt) as UserToken };
   }
 }
 
