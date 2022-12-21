@@ -7,7 +7,7 @@ import ProfileAbility from "../models/Profile.ability.js";
 import User, { IUser } from "../models/User.js";
 import UserAbility from "../models/User.ability.js";
 import App from "./app.js";
-import { QueryWithHelpers, Types } from "mongoose";
+import { QueryWithHelpers } from "mongoose";
 import type { AccessibleRecordQueryHelpers } from "@casl/mongoose/dist/types/accessible_records.js";
 import Error from "../classes/Error.js";
 
@@ -33,17 +33,13 @@ class Database {
     }
   }
 
-  Profile(token: IUser): QueryWithHelpers<
-    (IProfile & {
-      _id: Types.ObjectId;
-    })[],
-    IProfile & {
-      _id: Types.ObjectId;
-    },
+  Profile(
+    token: IUser,
+  ): QueryWithHelpers<
+    IProfile[],
+    IProfile,
     AccessibleRecordQueryHelpers<IProfile>,
-    IProfile & {
-      _id: Types.ObjectId;
-    }
+    IProfile
   > {
     if (this.app.mongoIsConnected)
       return Profile.accessibleBy(ProfileAbility(token));

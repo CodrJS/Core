@@ -6,14 +6,16 @@ import {
 import { Schema, model, Document } from "mongoose";
 
 export interface IProfile extends Document {
+  avatarUrl?: string;
   username: string;
-  userId: Schema.Types.ObjectId;
+  user: Schema.Types.ObjectId;
 }
 
 const ProfileSchema = new Schema<IProfile>(
   {
     username: { type: String, required: true, unique: true },
-    userId: {
+    avatarUrl: { type: String },
+    user: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,

@@ -30,6 +30,8 @@ export interface IUser extends Document {
   providers?: IUserProvider;
   isAdmin: boolean;
   role: UserRoleType;
+  disabled: boolean;
+  anonymous: boolean;
 }
 
 const UserProvider = new Schema<IUserProvider>({
@@ -73,6 +75,14 @@ const UserSchema = new Schema<IUser>(
     role: {
       type: String,
       required: [true, "Please specify the user's role."],
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    anonymous: {
+      type: Boolean,
+      default: false,
     },
   },
   {

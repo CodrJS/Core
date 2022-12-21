@@ -6,9 +6,9 @@ export default function ProfileAbility(user: IUser) {
     if (user.role === "codr:admin") {
       can("manage", "Profile");
     } else {
-      can("create", "Profile", { userId: user._id });
-      can("read", "Profile", { userId: user._id });
-      can("update", "Profile", { userId: user._id });
+      can("create", "Profile", { user: user._id });
+      can("read", "Profile", { user: user._id });
+      can("update", "Profile", { user: user._id });
     }
   });
 }
