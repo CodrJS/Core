@@ -1,3 +1,4 @@
+export { default as Admin } from "./services/admin.js";
 export { default as App } from "./services/app.js";
 export { default as Mail } from "./services/mail/index.js";
 export { default as Authentication } from "./services/auth.js";
