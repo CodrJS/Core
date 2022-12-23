@@ -25,7 +25,7 @@ interface User {
   };
 }
 
-type IUserSchema = User & Document;
+export type IUserSchema = User & Document;
 export type IUser = User & { _id: ObjectId }
 
 const UserSchema = new Schema<User>(

@@ -2,13 +2,11 @@
  * This service handles all configuration handlers for codr.
  */
 
-import Profile, { IProfile } from "../models/Profile.js";
+import Profile from "../models/Profile.js";
 import ProfileAbility from "../models/Profile.ability.js";
 import User, { IUser } from "../models/User.js";
 import UserAbility from "../models/User.ability.js";
 import App from "./app.js";
-import { QueryWithHelpers } from "mongoose";
-import type { AccessibleRecordQueryHelpers } from "@casl/mongoose/dist/types/accessible_records.js";
 import Error from "../classes/Error.js";
 
 class Database {
@@ -17,14 +15,7 @@ class Database {
     this.app = app;
   }
 
-  User(
-    token: IUser,
-  ): QueryWithHelpers<
-    IUser[],
-    IUser,
-    AccessibleRecordQueryHelpers<IUser>,
-    IUser
-  > {
+  User(token: IUser) {
     if (this.app.mongoIsConnected) {
       const query = User.accessibleBy(UserAbility(token));
       return query;
@@ -33,14 +24,7 @@ class Database {
     }
   }
 
-  Profile(
-    token: IUser,
-  ): QueryWithHelpers<
-    IProfile[],
-    IProfile,
-    AccessibleRecordQueryHelpers<IProfile>,
-    IProfile
-  > {
+  Profile(token: IUser) {
     if (this.app.mongoIsConnected)
       return Profile.accessibleBy(ProfileAbility(token));
     else {

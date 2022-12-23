@@ -1,6 +1,6 @@
 {
   "name": "@codrjs/core",
-  "version": "1.0.11",
+  "version": "1.0.11-patch1",
   "description": "An open-sourced customizable annotation tool",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
