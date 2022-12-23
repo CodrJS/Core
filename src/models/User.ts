@@ -4,56 +4,34 @@ import {
   AccessibleModel,
   accessibleRecordsPlugin,
 } from "@casl/mongoose";
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, ObjectId } from "mongoose";
 
 type Role = "admin" | "researcher" | "annotator";
 export type UserRoleType = `codr:${Role}`;
 
-interface IUserProvider {
-  photo?: string;
-  phone?: string;
-  email: string;
-  uid: string;
-}
-
-export interface IUserName {
-  first: string;
-  last: string;
-  preferred: string;
-}
-
-export interface IUser extends Document {
-  name?: IUserName;
+interface User {
+  name?: {
+    first: string;
+    last: string;
+    preferred?: string;
+  };
   email: string;
   accessToken: string;
   refreshToken: string;
-  providers?: IUserProvider;
-  isAdmin: boolean;
   role: UserRoleType;
-  disabled: boolean;
-  anonymous: boolean;
+  flags: {
+    isDisabled: boolean;
+    isAnonymous: boolean;
+  };
 }
 
-const UserProvider = new Schema<IUserProvider>({
-  photo: { type: String },
-  phone: { type: String },
-  email: { type: String, required: true },
-  uid: {
-    type: String,
-    required: [true, "Provider's unique identifier is required"],
-  },
-});
+type IUserSchema = User & Document;
+export type IUser = User & { _id: ObjectId }
 
-const UserName = new Schema<IUserName>({
-  first: { type: String },
-  last: { type: String },
-  preferred: { type: String },
-});
-
-const UserSchema = new Schema<IUser>(
+const UserSchema = new Schema<User>(
   {
     name: {
-      type: UserName,
+      type: Object,
     },
     email: {
       type: String,
@@ -69,20 +47,14 @@ const UserSchema = new Schema<IUser>(
     },
     accessToken: { type: String },
     refreshToken: { type: String },
-    providers: {
-      type: [UserProvider],
-    },
     role: {
       type: String,
       required: [true, "Please specify the user's role."],
     },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    anonymous: {
-      type: Boolean,
-      default: false,
+    flags: {
+      type: Object,
+      required: true,
+      default: { isAnonymous: false, isDisabled: false },
     },
   },
   {
@@ -90,12 +62,8 @@ const UserSchema = new Schema<IUser>(
   },
 );
 
-UserSchema.virtual("fullName").get(function get() {
-  return this.name?.preferred + " " + this.name?.last;
-});
-
 // exports User model.
 UserSchema.plugin(accessibleFieldsPlugin);
 UserSchema.plugin(accessibleRecordsPlugin);
-const User = model<IUser, AccessibleModel<IUser>>("User", UserSchema);
+const User = model<IUserSchema, AccessibleModel<IUserSchema>>("User", UserSchema);
 export default User;

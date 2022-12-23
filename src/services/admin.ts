@@ -3,9 +3,8 @@
  */
 
 import { MailTemplate, Response, Error } from "../classes/index.js";
-import { Types } from "mongoose";
 import { UserToken } from "../classes/JWT.js";
-import User, { IUser, IUserName, UserRoleType } from "../models/User.js";
+import User, { IUser, UserRoleType } from "../models/User.js";
 import App from "./app.js";
 import Mail from "./mail/index.js";
 
@@ -24,7 +23,7 @@ class Administration {
 
   async addUser(
     user: UserToken,
-    newUser: { email: string; role: UserRoleType; name?: IUserName },
+    newUser: { email: string; role: UserRoleType; name?: IUser["name"], isAnonymous: boolean; },
   ) {
     if (this.app.mongoIsConnected) {
       // check if user is admin; will throw an error if not.
@@ -83,9 +82,9 @@ class Administration {
    */
   async addUsers(
     user: UserToken,
-    newUsers: { email: string; role: UserRoleType }[],
+    newUsers: { email: string; role: UserRoleType, isAnonymous: boolean }[],
   ) {
-    const users: (IUser & { _id: Types.ObjectId })[] = [];
+    const users: (IUser)[] = [];
     const errors: Error<
       { email: string; role: UserRoleType } | { connectionStatus: string }
     >[] = [];

@@ -9,7 +9,7 @@ import Email from "../classes/Email.js";
 import SigninTemplate from "../classes/MailTemplate/Signin.js";
 import User, { IUser } from "../models/User.js";
 import Response from "../classes/Response.js";
-import { generateToken, UserToken, verifyToken } from "../classes/JWT.js";
+import * as JWT from "../classes/JWT.js";
 import Error from "../classes/Error.js";
 import AccessToken from "../classes/AccessToken.js";
 import { decrypt, encrypt } from "../utils/AccessToken";
@@ -32,7 +32,7 @@ class Authentication {
 
   async signinWithEmail(
     accessCode: string,
-  ): Promise<Response<undefined | { token: string }>> {
+  ): Promise<Response<undefined | { user: IUser }>> {
     const { email, token } = decrypt<IAccessCode>(accessCode);
     if (!email) {
       throw new Error({
@@ -113,13 +113,10 @@ class Authentication {
         }
 
         try {
-          // generate JWT token
-          const token = generateToken({ ...user.toJSON(), ...update } as IUser);
-
           // send response
-          return new Response<{ token: string }>({
+          return new Response<{ user: IUser }>({
             message: `Login successful.`,
-            details: { token },
+            details: { user: {...user.toObject(), ...update} },
           });
         } catch (e: any) {
           throw new Error({
@@ -145,10 +142,10 @@ class Authentication {
   }
 
   updateJWT(oldJWT: string, payload: IUser) {
-    verifyToken(oldJWT);
+    JWT.verifyToken(oldJWT);
 
-    const jwt = generateToken(payload);
-    return { jwt, user: decode(jwt) as UserToken };
+    const jwt = JWT.generateToken(payload);
+    return { jwt, user: decode(jwt) as JWT.UserToken };
   }
 }
 
