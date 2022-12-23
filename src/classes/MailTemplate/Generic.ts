@@ -43,7 +43,7 @@ export default class GenericTemplate<T extends string>
    * @param {{[x: string]: string}} params Values to replace placeholders in template text.
    */
   validate(params: Record<T, string>) {
-    const missing = [];
+    const missing: string[] = [];
     for (const opt of this.requiredParams) {
       if (Object.prototype.hasOwnProperty.call(params, opt)) {
         // check to makesure the option is not empty

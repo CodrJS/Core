@@ -15,7 +15,7 @@ export default class SigninTemplate extends GenericTemplate<RequiredParamsType> 
 Sign into your Codr account with the following link:
 {link}
 
-If you did not attempt to sign in, disragard this email.`.replace(/\n/g, `<br />`);
+If you did not attempt to sign in, disregard this email.`.replace(/\n/g, `<br />`);
 
     super(template, subject, requiredParams);
   }
