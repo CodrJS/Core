@@ -174,7 +174,7 @@ class Administration {
       try {
         const u = await this.updateUser(user, update);
         users.push(u.details);
-      } catch (e) {
+      } catch (e: any) {
         errors.push(e);
       }
     }
