@@ -132,16 +132,13 @@ class Administration {
         if (uUser)
           return new Response({
             message: "User updated successfully",
-            details: { updated: uUser },
+            details: uUser,
           });
         else {
           throw new Error({
             status: 500,
             message: "An error occurred while trying to update a user.",
-            details: {
-              userId: update._id,
-              update,
-            },
+            details: update,
           });
         }
       } catch (e) {
@@ -170,14 +167,13 @@ class Administration {
 
     const users: IUser[] = [];
     const errors: Error<
-      | { userId: string; update: Partial<IUser> & { _id: ObjectId } }
-      | { connectionStatus: string }
+      (Partial<IUser> & { _id: ObjectId }) | { connectionStatus: string }
     >[] = [];
 
     for (const update of updates) {
       try {
         const u = await this.updateUser(user, update);
-        users.push(u.details.updated);
+        users.push(u.details);
       } catch (e) {
         errors.push(e);
       }
