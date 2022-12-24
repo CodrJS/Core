@@ -2,9 +2,10 @@
  * This service handles all administrative tasks for codr.
  */
 
+import { ObjectId } from "mongoose";
 import { MailTemplate, Response, Error } from "../classes/index.js";
 import { UserToken } from "../classes/JWT.js";
-import User, { IUser, UserRoleType } from "../models/User.js";
+import User, { IUser, USERROLE, UserRoleType } from "../models/User.js";
 import App from "./app.js";
 import Mail from "./mail/index.js";
 
@@ -23,7 +24,12 @@ class Administration {
 
   async addUser(
     user: UserToken,
-    newUser: { email: string; role: UserRoleType; name?: IUser["name"], isAnonymous: boolean; },
+    newUser: {
+      email: string;
+      role: UserRoleType;
+      name?: IUser["name"];
+      isAnonymous: boolean;
+    },
   ) {
     if (this.app.mongoIsConnected) {
       // check if user is admin; will throw an error if not.
@@ -34,7 +40,7 @@ class Administration {
         const nUser = await User.create(newUser);
 
         const tempOpts = {
-          role: newUser.role,
+          role: USERROLE[newUser.role],
           link: process.env.HOST + "/signin",
           name: newUser.name
             ? newUser.name.preferred
@@ -82,9 +88,9 @@ class Administration {
    */
   async addUsers(
     user: UserToken,
-    newUsers: { email: string; role: UserRoleType, isAnonymous: boolean }[],
+    newUsers: { email: string; role: UserRoleType; isAnonymous: boolean }[],
   ) {
-    const users: (IUser)[] = [];
+    const users: IUser[] = [];
     const errors: Error<
       { email: string; role: UserRoleType } | { connectionStatus: string }
     >[] = [];
@@ -101,6 +107,86 @@ class Administration {
       message: errors.length
         ? "Some errors occurred while adding users."
         : "All users have been added.",
+      details: { users, errors },
+    });
+  }
+
+  async getUsers(user: IUser) {
+    this.isAdmin(user);
+
+    const users = (await User.find()).map(u => u.toObject());
+
+    return new Response({
+      message: "OK",
+      details: { users },
+    });
+  }
+
+  async updateUser(user: IUser, update: Partial<IUser> & { _id: ObjectId }) {
+    this.isAdmin(user);
+
+    if (this.app.mongoIsConnected) {
+      try {
+        const uUser = await User.findByIdAndUpdate(update._id, update);
+
+        if (uUser)
+          return new Response({
+            message: "User updated successfully",
+            details: { updated: uUser },
+          });
+        else {
+          throw new Error({
+            status: 500,
+            message: "An error occurred while trying to update a user.",
+            details: {
+              userId: update._id,
+              update,
+            },
+          });
+        }
+      } catch (e) {
+        throw new Error({
+          status: 500,
+          message: "An error occurred while trying to update a user.",
+          details: e,
+        });
+      }
+    } else {
+      throw new Error({
+        status: 500,
+        message: "MongoDB is not connected.",
+        details: {
+          connectionStatus: this.app.mongoStatus,
+        },
+      });
+    }
+  }
+
+  async updateUsers(
+    user: IUser,
+    updates: (Partial<IUser> & { _id: ObjectId })[],
+  ) {
+    this.isAdmin(user);
+
+    const users: IUser[] = [];
+    const errors: Error<
+      | { userId: string; update: Partial<IUser> & { _id: ObjectId } }
+      | { connectionStatus: string }
+    >[] = [];
+
+    for (const update of updates) {
+      try {
+        const u = await this.updateUser(user, update);
+        users.push(u.details.updated);
+      } catch (e) {
+        errors.push(e);
+      }
+    }
+
+    return new Response({
+      message: errors.length
+        ? "Some errors occurred while updating users."
+        : "All users have been updated.",
       details: { users, errors },
     });
   }

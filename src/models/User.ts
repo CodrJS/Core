@@ -8,6 +8,11 @@ import { Schema, model, Document, ObjectId } from "mongoose";
 
 type Role = "admin" | "researcher" | "annotator";
 export type UserRoleType = `codr:${Role}`;
+export enum USERROLE {
+  "codr:admin" = "Admin",
+  "codr:researcher" = "Researcher",
+  "codr:annotator" = "Annotator",
+}
 
 interface User {
   name?: {
