@@ -28,10 +28,14 @@ interface User {
     isDisabled: boolean;
     isAnonymous: boolean;
   };
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type IUserSchema = User & Document;
-export type IUser = User & { _id: ObjectId }
+export type IUser = User & {
+  _id: ObjectId;
+};
 
 const UserSchema = new Schema<User>(
   {
@@ -70,5 +74,8 @@ const UserSchema = new Schema<User>(
 // exports User model.
 UserSchema.plugin(accessibleFieldsPlugin);
 UserSchema.plugin(accessibleRecordsPlugin);
-const User = model<IUserSchema, AccessibleModel<IUserSchema>>("User", UserSchema);
+const User = model<IUserSchema, AccessibleModel<IUserSchema>>(
+  "User",
+  UserSchema,
+);
 export default User;

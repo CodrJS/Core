@@ -55,33 +55,41 @@ class Authentication {
           "It appears you do not have an account using this email, please contact your Codr admin to gain access.",
       });
     } else if (!token) {
-      try {
-        // init access token
-        const uuid = uuidv4();
-        const accessToken = new AccessToken(uuid);
-        await user.updateOne({
-          accessToken: accessToken.encode(),
-        });
-
-        // send email with access code/token
-        const link =
-          `${process.env.HOST}${process.env.API_PATH}` +
-          "/auth/email/verify?token=" +
-          encrypt(JSON.stringify({ email: email, token: uuid }));
-        const template = new SigninTemplate();
-        await Mail.send(await template.html({ link }), {
-          ...template.config,
-          to: email,
-        });
-        return new Response({
-          message: "An email has been sent to your inbox.",
-        });
-      } catch (e: any) {
+      if (user.flags.isDisabled) {
         throw new Error({
           status: 500,
-          message: e?.message || "An unknown error occured",
-          details: e,
+          message:
+            "It appears that your account has been disabled or deleted. Please contact your administrator if you feel like this is a mistake.",
         });
+      } else {
+        try {
+          // init access token
+          const uuid = uuidv4();
+          const accessToken = new AccessToken(uuid);
+          await user.updateOne({
+            accessToken: accessToken.encode(),
+          });
+
+          // send email with access code/token
+          const link =
+            `${process.env.HOST}${process.env.API_PATH}` +
+            "/auth/email/verify?token=" +
+            encrypt(JSON.stringify({ email: email, token: uuid }));
+          const template = new SigninTemplate();
+          await Mail.send(await template.html({ link }), {
+            ...template.config,
+            to: email,
+          });
+          return new Response({
+            message: "An email has been sent to your inbox.",
+          });
+        } catch (e: any) {
+          throw new Error({
+            status: 500,
+            message: e?.message || "An unknown error occured",
+            details: e,
+          });
+        }
       }
     } else if (user.accessToken) {
       // decrypt the stored access code
@@ -116,7 +124,7 @@ class Authentication {
           // send response
           return new Response<{ user: IUser }>({
             message: `Login successful.`,
-            details: { user: {...user.toObject(), ...update} },
+            details: { user: { ...user.toObject(), ...update } },
           });
         } catch (e: any) {
           throw new Error({

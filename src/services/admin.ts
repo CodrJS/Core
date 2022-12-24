@@ -28,7 +28,7 @@ class Administration {
       email: string;
       role: UserRoleType;
       name?: IUser["name"];
-      isAnonymous: boolean;
+      flags?: IUser["flags"];
     },
   ) {
     if (this.app.mongoIsConnected) {
@@ -88,7 +88,12 @@ class Administration {
    */
   async addUsers(
     user: UserToken,
-    newUsers: { email: string; role: UserRoleType; isAnonymous: boolean }[],
+    newUsers: {
+      email: string;
+      role: UserRoleType;
+      name?: IUser["name"];
+      flags?: IUser["flags"];
+    }[],
   ) {
     const users: IUser[] = [];
     const errors: Error<
