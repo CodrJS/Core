@@ -5,6 +5,7 @@
 import { ObjectId } from "mongoose";
 import { MailTemplate, Response, Error } from "../classes/index.js";
 import { UserToken } from "../classes/JWT.js";
+import Profile from "../models/Profile.js";
 import User, { IUser, USERROLE, UserRoleType } from "../models/User.js";
 import App from "./app.js";
 import Mail from "./mail/index.js";
@@ -29,6 +30,7 @@ class Administration {
       role: UserRoleType;
       name?: IUser["name"];
       flags?: IUser["flags"];
+      username?: string;
     },
   ) {
     if (this.app.mongoIsConnected) {
@@ -36,8 +38,18 @@ class Administration {
       this.isAdmin(user);
 
       if (newUser.email && newUser.role) {
+        let username: string | undefined;
+        if (newUser.username) {
+          username = `${newUser.username}`;
+          delete newUser.username;
+        }
+
         // create and returns a new user is no error occurs.
         const nUser = await User.create(newUser);
+
+        if (username) {
+          Profile.create({ user: nUser._id, username });
+        }
 
         const tempOpts = {
           role: USERROLE[newUser.role],
