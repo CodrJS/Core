@@ -1,14 +1,20 @@
-import { defineAbility } from "@casl/ability";
+import { DefineAbility, Permissions } from "../types/Ability.js";
 import { IUser } from "./User.js";
+import { ProfileDocument } from "./Profile.js";
 
-export default function ProfileAbility(user: IUser) {
-  return defineAbility(can => {
-    if (user.role === "codr:admin") {
-      can("manage", "Profile");
-    } else {
-      can("create", "Profile", { user: user._id });
-      can("read", "Profile", { user: user._id });
-      can("update", "Profile", { user: user._id });
-    }
-  });
-}
+const permissions: Permissions<ProfileDocument> = {
+  "codr:admin": (user, { can }) => {
+    can("manage", "Profile");
+  },
+  "codr:researcher": (user, { can }) => {
+    can("read", "Profile");
+    can("create", "Profile", { user: user._id });
+    can("update", "Profile", { user: user._id });
+  },
+  "codr:annotator": (user, { can }) => {
+    can("read", "Profile");
+  },
+};
+
+const ProfileAbility = (user: IUser) => DefineAbility(user, permissions);
+export default ProfileAbility;

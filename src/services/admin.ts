@@ -5,15 +5,17 @@
 import { ObjectId } from "mongoose";
 import { MailTemplate, Response, Error } from "../classes/index.js";
 import { UserToken } from "../classes/JWT.js";
-import Profile from "../models/Profile.js";
-import User, { IUser, USERROLE, UserRoleType } from "../models/User.js";
+import { IUser, USERROLE, UserRoleType } from "../models/User.js";
 import App from "./app.js";
+import Database from "./database.js";
 import Mail from "./mail/index.js";
 
 class Administration {
   private app: App;
+  private database: Database;
   constructor(app: App) {
     this.app = app;
+    this.database = new Database(app);
   }
 
   private isAdmin(user: UserToken) {
@@ -36,6 +38,8 @@ class Administration {
     if (this.app.mongoIsConnected) {
       // check if user is admin; will throw an error if not.
       this.isAdmin(user);
+      const [User] = this.database.User(user);
+      const [Profile] = this.database.Profile(user);
 
       if (newUser.email && newUser.role) {
         let username: string | undefined;
@@ -130,6 +134,7 @@ class Administration {
 
   async getUsers(user: IUser) {
     this.isAdmin(user);
+    const User = this.database.withAbility(this.database.User(user));
 
     const users = (await User.find()).map(u => u.toObject());
 
@@ -141,6 +146,7 @@ class Administration {
 
   async updateUser(user: IUser, update: Partial<IUser> & { _id: ObjectId }) {
     this.isAdmin(user);
+    const User = this.database.withAbility(this.database.User(user));
 
     if (this.app.mongoIsConnected) {
       try {

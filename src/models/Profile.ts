@@ -11,8 +11,7 @@ export interface Profile {
   user: Schema.Types.ObjectId;
 }
 
-type IProfileSchema = IProfile & Document
-export type IProfile = Profile & { _id: ObjectId }
+export type IProfile = Profile & { _id: ObjectId };
 
 const ProfileSchema = new Schema<Profile>(
   {
@@ -22,6 +21,7 @@ const ProfileSchema = new Schema<Profile>(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      immutable: true,
     },
   },
   {
@@ -30,9 +30,10 @@ const ProfileSchema = new Schema<Profile>(
 );
 
 // exports User model.
+export type ProfileDocument = Profile & Document;
 ProfileSchema.plugin(accessibleFieldsPlugin);
 ProfileSchema.plugin(accessibleRecordsPlugin);
-const Profile = model<IProfileSchema, AccessibleModel<IProfileSchema>>(
+const Profile = model<ProfileDocument, AccessibleModel<ProfileDocument>>(
   "Profile",
   ProfileSchema,
 );

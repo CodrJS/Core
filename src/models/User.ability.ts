@@ -1,13 +1,19 @@
-import { defineAbility } from "@casl/ability";
-import { IUser } from "./User.js";
+import { DefineAbility, Permissions } from "../types/Ability.js";
+import { IUser, UserDocument } from "./User.js";
 
-export default function UserAbility(user: IUser) {
-  return defineAbility((can) => {
-    if (user.role === "codr:admin") {
-      can("manage", "User");
-    } else {
-      can("read", "User", { _id: user._id });
-      can("update", "User", { _id: user._id });
-    }
-  });
-}
+const permissions: Permissions<UserDocument> = {
+  "codr:admin": (user, { can }) => {
+    can("manage", "User");
+  },
+  "codr:researcher": (user, { can }) => {
+    can("read", "User", { _id: user._id });
+    can("update", "User", { _id: user._id });
+  },
+  "codr:annotator": (user, { can }) => {
+    can("read", "User", { _id: user._id });
+    can("update", "User", { _id: user._id });
+  },
+};
+
+const UserAbility = (user: IUser) => DefineAbility(user, permissions);
+export default UserAbility;

@@ -1,10 +1,10 @@
 import { EmailRegex } from "../classes/Email.js";
+import { Schema, model, Document, ObjectId } from "mongoose";
 import {
   accessibleFieldsPlugin,
   AccessibleModel,
   accessibleRecordsPlugin,
 } from "@casl/mongoose";
-import { Schema, model, Document, ObjectId } from "mongoose";
 
 type Role = "admin" | "researcher" | "annotator";
 export type UserRoleType = `codr:${Role}`;
@@ -32,7 +32,6 @@ interface User {
   updatedAt: string;
 }
 
-export type IUserSchema = User & Document;
 export type IUser = User & {
   _id: ObjectId;
 };
@@ -72,9 +71,10 @@ const UserSchema = new Schema<User>(
 );
 
 // exports User model.
+export type UserDocument = User & Document;
 UserSchema.plugin(accessibleFieldsPlugin);
 UserSchema.plugin(accessibleRecordsPlugin);
-const User = model<IUserSchema, AccessibleModel<IUserSchema>>(
+const User = model<UserDocument, AccessibleModel<UserDocument>>(
   "User",
   UserSchema,
 );

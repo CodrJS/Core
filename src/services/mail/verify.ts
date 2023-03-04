@@ -12,7 +12,7 @@ export default function verifyParameters<T extends Record<string, any>>(
   required: string[],
 ) {
   let passed = true;
-  const missing = [];
+  const missing: string[] = [];
   for (const p of required) {
     if (Object.prototype.hasOwnProperty.call(params, p)) {
       switch (typeof p) {

@@ -2,12 +2,14 @@
  * This service handles all configuration handlers for codr.
  */
 
-import Profile from "../models/Profile.js";
-import ProfileAbility from "../models/Profile.ability.js";
-import User, { IUser } from "../models/User.js";
-import UserAbility from "../models/User.ability.js";
 import App from "./app.js";
-import Error from "../classes/Error.js";
+import { Ability as AppAbility, ACTION } from "../types/Ability.js";
+import { Ability, Model } from "../models/index.js";
+import { IUser, UserDocument } from "../models/User.js";
+import { ProfileDocument } from "../models/Profile.js";
+import { ProjectDocument } from "../models/Project/index.js";
+import { UserGroupDocument } from "../models/UserGroup.js";
+import { AccessibleModel } from "@casl/mongoose";
 
 class Database {
   private app: App;
@@ -15,21 +17,41 @@ class Database {
     this.app = app;
   }
 
-  User(token: IUser) {
-    if (this.app.mongoIsConnected) {
-      const query = User.accessibleBy(UserAbility(token));
-      return query;
-    } else {
-      throw new Error({ status: 500, message: "MongoDB is not connected." });
-    }
+  withAbility<M extends AccessibleModel<A>, A>(
+    [model, ability]: [M, AppAbility<A>],
+    action?: ACTION,
+  ) {
+    return model.accessibleBy(ability, action);
   }
 
-  Profile(token: IUser) {
-    if (this.app.mongoIsConnected)
-      return Profile.accessibleBy(ProfileAbility(token));
-    else {
-      throw new Error({ status: 500, message: "MongoDB is not connected." });
-    }
+  /**
+   * Manage profile database schema
+   */
+  Profile(token: IUser): [typeof Model.Profile, AppAbility<ProfileDocument>] {
+    return [Model.Profile, Ability.ProfileAbility(token)];
+  }
+
+  /**
+   * Manage project database schema
+   */
+  Project(token: IUser): [typeof Model.Project, AppAbility<ProjectDocument>] {
+    return [Model.Project, Ability.ProjectAbility(token)];
+  }
+
+  /**
+   * Manage user database schema
+   */
+  User(token: IUser): [typeof Model.User, AppAbility<UserDocument>] {
+    return [Model.User, Ability.UserAbility(token)];
+  }
+
+  /**
+   * Manage user group database schema
+   */
+  UserGroup(
+    token: IUser,
+  ): [typeof Model.UserGroup, AppAbility<UserGroupDocument>] {
+    return [Model.UserGroup, Ability.UserGroupAbility(token)];
   }
 }
 
